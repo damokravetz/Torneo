@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Torneos";
+}
+
+<h3>@ViewBag.Message</h3>
+<div>
+    @{
+        for (int i = 0; i < 10; i++)
+        {
+            @Html.Partial("_Torneo");
+        };
+    }
+    <div class="divtorneo0">
+        <p><a name="btnaddtorneo" class="btn btn-primary btn-lg">Agregar Torneo</a></p>
+    </div>
+</div>
+

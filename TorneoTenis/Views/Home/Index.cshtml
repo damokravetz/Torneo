@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<div class="row" style="text-align:center"><h1>TuTorneo</h1></div>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="d0" style="float:right">
+            <form action="/Home/Torneos" method="post">
+                <h3>Login:</h3>
+                <p>Email</p>
+                <input name="email" type="email" class="form-control">
+                <p>Contraseña</p>
+                <p><input name="pass" type="password" class="form-control"></p>
+                <input type="submit" class="btn btn-primary btn-lg">
+
+            </form>
+        </div>
+    </div>
+    <div class="col-sm-6">
+        <form>
+            <div class="d0" style="float:left">
+                <h3>Registrarse:</h3>
+                <p>Nombre</p>
+                <p><input type="text" class="form-control"></p>
+                <p>Apellido</p>
+                <p><input type="text" class="form-control"></p>
+                <p>Email</p>
+                <p><input type="email" class="form-control"></p>
+                <p>Contraseña</p>
+                <p><input type="password" class="form-control"></p>
+                <p>Confirmar Contraseña</p>
+                <p><input type="password" class="form-control"></p>
+                <p><button type="submit" class="btn btn-primary btn-lg">Register</button></p>
+            </div>
+        </form>
+    </div>
+</div>
+
