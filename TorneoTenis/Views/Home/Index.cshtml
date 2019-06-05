@@ -1,6 +1,4 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
+﻿<h3>@ViewBag.Useradd hola</h3>
 <div class="row" style="text-align:center"><h1>TuTorneo</h1></div>
 <div class="row">
     <div class="col-sm-6">
@@ -8,31 +6,38 @@
             <form action="/Home/Torneos" method="post">
                 <h3>Login:</h3>
                 <p>Email</p>
-                <input name="email" type="email" class="form-control">
+                <input name="email" id="email0" type="email" class="form-control">
                 <p>Contraseña</p>
-                <p><input name="pass" type="password" class="form-control"></p>
+                <p><input name="pass" id="pass0" type="password" class="form-control"></p>
                 <input type="submit" class="btn btn-primary btn-lg">
 
             </form>
         </div>
     </div>
     <div class="col-sm-6">
-        <form>
+        <form action="/Home/AgregarUsuario" method="post">
             <div class="d0" style="float:left">
                 <h3>Registrarse:</h3>
                 <p>Nombre</p>
-                <p><input type="text" class="form-control"></p>
+                <p><input name="nombre" id="nom" type="text" class="form-control"></p>
                 <p>Apellido</p>
-                <p><input type="text" class="form-control"></p>
+                <p><input name="apellido" id="ape" type="text" class="form-control"></p>
                 <p>Email</p>
-                <p><input type="email" class="form-control"></p>
+                <p><input name="email" id="email1" type="email" class="form-control"></p>
                 <p>Contraseña</p>
-                <p><input type="password" class="form-control"></p>
+                <p><input id="pass1" type="password" class="form-control"></p>
                 <p>Confirmar Contraseña</p>
-                <p><input type="password" class="form-control"></p>
+                <p><input name="pass" id="pass2" type="password" class="form-control"></p>
                 <p><button type="submit" class="btn btn-primary btn-lg">Register</button></p>
             </div>
         </form>
     </div>
 </div>
+@{
+    if (!string.IsNullOrEmpty(ViewBag.Useradd))
+    {
+        <script type="text/javascript">alert(@ViewBag.Useradd);</script>
+    }
+}
+
 

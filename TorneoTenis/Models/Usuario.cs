@@ -8,10 +8,13 @@ namespace TorneoTenis.Models
 {
     public class Usuario
     {
+
         public int Id { get; set; }
         public String nombre { get; set; }
         public String apellido { get; set; }
         public String email { get; set; }
         public String pass { get; set; }
+
+
     }
 }
