@@ -1,4 +1,4 @@
-﻿
+﻿@model List<TorneoTenis.Models.Torneo>
 @{
     ViewBag.Title = "Torneos";
 }
@@ -6,9 +6,9 @@
 <h3>@ViewBag.Message</h3>
 <div>
     @{
-        for (int i = 0; i < 10; i++)
+            foreach (TorneoTenis.Models.Torneo t in Model)
         {
-            @Html.Partial("_Torneo");
+            @Html.Partial("_Torneo", t);
         };
     }
     <div class="divtorneo0">

@@ -92,15 +92,13 @@ namespace TorneoTenis.Controllers
             {
                 if (usuario.pass.Equals(pass))
                 {
-                    List<Torneo>torneos  = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", usuario.Id)).ToList();
+                    List<Torneo> torneos  = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", usuario.Id)).ToList();
                     return View("Torneos", torneos);
                 }
                 
             }
             ViewBag.Login = "Email o Contraseña incorrectos";
             return View("Index");
-            
-
         }
     }
 }
