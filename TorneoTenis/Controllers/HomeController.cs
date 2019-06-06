@@ -85,9 +85,22 @@ namespace TorneoTenis.Controllers
             return View("Index");
         }
         [HttpPost]
-        public ActionResult Login()
+        public ActionResult Login(String email, String pass)
         {
-            return View("Torneos");
+            Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE email=@email", new SqlParameter("@email", email)).FirstOrDefault();
+            if (usuario != null)
+            {
+                if (usuario.pass.Equals(pass))
+                {
+                    List<Torneo>torneos  = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", usuario.Id)).ToList();
+                    return View("Torneos", torneos);
+                }
+                
+            }
+            ViewBag.Login = "Email o Contraseña incorrectos";
+            return View("Index");
+            
+
         }
     }
 }

@@ -1,9 +1,8 @@
-﻿<h3>@ViewBag.Useradd hola</h3>
-<div class="row" style="text-align:center"><h1>TuTorneo</h1></div>
+﻿<div class="row" style="text-align:center"><h1>TuTorneo</h1></div>
 <div class="row">
     <div class="col-sm-6">
         <div class="d0" style="float:right">
-            <form action="/Home/Torneos" method="post">
+            <form action="/Home/Login" method="post">
                 <h3>Login:</h3>
                 <p>Email</p>
                 <input name="email" id="email0" type="email" class="form-control">
@@ -33,8 +32,13 @@
         </form>
     </div>
 </div>
-@if (ViewBag.Useradd != null) { 
+@if (ViewBag.Useradd != null)
+{
     <script type="text/javascript">alert("@ViewBag.Useradd");</script>
+}
+@if (ViewBag.Login != null)
+{
+    <script type="text/javascript">alert("@ViewBag.Login");</script>
 }
 
 
