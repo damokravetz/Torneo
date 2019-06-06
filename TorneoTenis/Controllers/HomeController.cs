@@ -67,12 +67,12 @@ namespace TorneoTenis.Controllers
             return View();
         }
         [HttpPost]
-        public ActionResult AgregarUsuario(String nombre, String apellido, String email, String pass)
+        public ActionResult AgregarUsuario(Usuario newUser)
         {
-            Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE email=@email", new SqlParameter("@email", email)).FirstOrDefault();
+            Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE email=@email", new SqlParameter("@email", newUser.email)).FirstOrDefault();
             if (usuario == null)
             {
-                db.Usuario.Add(new Usuario { nombre = nombre, apellido = apellido, email = email, pass = pass });
+                db.Usuario.Add(new Usuario { nombre = newUser.nombre, apellido = newUser.apellido, email = newUser.email, pass = newUser.pass });
                 db.SaveChanges();
                 ViewBag.Useradd = "Usuario registrado con exito";
 
@@ -81,8 +81,13 @@ namespace TorneoTenis.Controllers
             {
                 ViewBag.Useradd = "El usuario ya se encuentra registrado";
             }
-            return RedirectToAction("Index", "Home");
-            //return Index();
+            //return RedirectToAction("Index", "Home");
+            return View("Index");
+        }
+        [HttpPost]
+        public ActionResult Login()
+        {
+            return View("Torneos");
         }
     }
 }

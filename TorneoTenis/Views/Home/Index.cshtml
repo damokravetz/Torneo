@@ -33,11 +33,8 @@
         </form>
     </div>
 </div>
-@{
-    if (!string.IsNullOrEmpty(ViewBag.Useradd))
-    {
-        <script type="text/javascript">alert(@ViewBag.Useradd);</script>
-    }
+@if (ViewBag.Useradd != null) { 
+    <script type="text/javascript">alert("@ViewBag.Useradd");</script>
 }
 
 
