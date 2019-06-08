@@ -136,6 +136,8 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ApplicationDbContext.cs" />
+    <Compile Include="Models\Jugador.cs" />
+    <Compile Include="Models\Partido.cs" />
     <Compile Include="Models\Torneo.cs" />
     <Compile Include="Models\Usuario.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -184,6 +186,7 @@
     <Content Include="Views\Home\Torneo.cshtml" />
     <Content Include="Views\Home\Partidos.cshtml" />
     <Content Include="Views\Home\TusDatos.cshtml" />
+    <Content Include="Views\Home\Jugadores.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

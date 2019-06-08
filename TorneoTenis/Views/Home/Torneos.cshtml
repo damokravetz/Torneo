@@ -3,16 +3,16 @@
     ViewBag.Title = "Torneos";
 }
 
-<h3>@ViewBag.Message</h3>
 <div>
     @{
-            foreach (TorneoTenis.Models.Torneo t in Model)
+        foreach (TorneoTenis.Models.Torneo t in Model)
         {
             @Html.Partial("_Torneo", t);
         };
     }
     <div class="divtorneo0">
-        <p><a name="btnaddtorneo" class="btn btn-primary btn-lg">Agregar Torneo</a></p>
+        <p><button type="submit" onclick="location.href='/Home/AgregarTorneo'" name="btnaddtorneo" class="btn btn-primary btn-lg">Agregar Torneo</button></p>
     </div>
 </div>
+
 

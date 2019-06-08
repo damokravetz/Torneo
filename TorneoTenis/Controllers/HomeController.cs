@@ -13,7 +13,15 @@ namespace TorneoTenis.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            return View();
+            if (getIdSession()==-1)
+            {
+                return View();
+            }
+            else
+            {
+                return View("Torneos", getTorneos());
+            }
+            
         }
 
         public ActionResult About()
@@ -35,18 +43,14 @@ namespace TorneoTenis.Controllers
 
             return View();
         }
-        [HttpPost]
-        public ActionResult Torneos(String email, String pass)
+
+        public ActionResult Torneos()
         {
-            if (email.Equals("kravetzdamian@gmail.com")&&pass.Equals("1234"))
+            if (getIdSession()==-1)
             {
-                ViewBag.Message = "Exito";
+                return View("Index");
             }
-            else
-            {
-                ViewBag.Message = "Fracaso";
-            }
-            return View();
+            return View(getTorneos());
         }
         public ActionResult Torneo()
         {
@@ -61,6 +65,12 @@ namespace TorneoTenis.Controllers
             return View();
         }
         public ActionResult TusDatos()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+        public ActionResult Jugadores()
         {
             ViewBag.Message = "Your contact page.";
 
@@ -92,12 +102,76 @@ namespace TorneoTenis.Controllers
             {
                 if (usuario.pass.Equals(pass))
                 {
-                    List<Torneo> torneos  = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", usuario.Id)).ToList();
-                    return View("Torneos", torneos);
+                    Session["idusuario"] = usuario.Id;
+                    //HttpCookie miCookie = new HttpCookie("Userid", usuario.Id.ToString());
+                    //miCookie.Expires.AddDays(1);
+                    //HttpContext.Response.SetCookie(miCookie);
+                    //HttpCookie miCookie1 = HttpContext.Request.Cookies["Userid"];
+                    return View("Torneos", getTorneos());
                 }
                 
             }
             ViewBag.Login = "Email o Contraseña incorrectos";
+            return View("Index");
+        }
+        [HttpPost]
+        public ActionResult GuardarTorneo(String nombre , int cantjgdrs)
+        {
+            Torneo t = new Torneo { IdUsuario = getIdSession(), nombre = nombre, cantjdrs = cantjgdrs };
+            if (getTorneo(t.nombre) == null)
+            {
+                db.Torneo.Add(t);
+                db.SaveChanges();
+                return View("Torneos", getTorneos());
+            }
+            else
+            {
+                ViewBag.Guardar = "Ya hay un torneo con ese nombre";
+                return View("AgregarTorneo");
+            }
+        }
+        public int ManejarCookie()
+        {
+            HttpCookie miCookie1 = HttpContext.Request.Cookies["Userid"];
+            int id = Int32.Parse(miCookie1.Value);
+            return id;
+        }
+        public List<Torneo> getTorneos()
+        {
+            int id =getIdSession();
+            List<Torneo> torneos = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", id)).ToList();
+            return torneos;
+        }
+        public Torneo getTorneo(String nombre)
+        {
+            SqlParameter nom = new SqlParameter("@nombre", nombre);
+            SqlParameter idusu = new SqlParameter("@idusuario", getIdSession());
+            Torneo t = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE nombre=@nombre AND IdUsuario=@idusuario",nom,idusu).FirstOrDefault();
+            return t;
+        }
+        /*public List<Jugador> getJugadores()
+        {
+            SqlParameter nom = new SqlParameter("@nombre", nombre);
+            SqlParameter idusu = new SqlParameter("@idusuario", getIdSession());
+            List<Jugador> jugadores = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadores WHERE IdTorneo=@idtorneo", new SqlParameter("@idtorneo", id)).ToList();
+            return jugadores;
+        }*/
+        public int getIdSession()
+        {
+            int id;
+            if (Session["idusuario"]!=null)
+            {
+                id =Int32.Parse(Session["idusuario"].ToString());
+            }
+            else
+            {
+                id = -1;
+            }
+            return id;
+        }
+        public ActionResult salirSession()
+        {
+            Session.Remove("idusuario");
             return View("Index");
         }
     }

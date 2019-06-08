@@ -1,16 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
-using System.Data.Entity;
 
 namespace TorneoTenis.Models
 {
-    public class Torneo
+    public class Jugador
     {
         public int Id { get; set; }
-        public int IdUsuario { get; set; }
+        public int IdTorneo { get; set; }
         public String nombre { get; set; }
-        public int cantjdrs { get; set; }
+        public char grupo { get; set; }
     }
 }

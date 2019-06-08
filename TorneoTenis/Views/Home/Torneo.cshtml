@@ -1,11 +1,13 @@
-﻿@
-@{
+﻿@{
     ViewBag.Title = "Torneo";
 }
 <div class="alert alert-success" role="alert" style="margin-top:20px; text-align:center;">
     Ganador: Pedro
 </div>
-<div style="text-align:center"><p><a class="btn btn-primary btn-lg">@Html.ActionLink("Ver Partidos", "Partidos", "Home")</a></p></div>
+<div style="text-align:center">
+<p><button type="submit" onclick="location.href='/Home/Partidos'" class="btn btn-primary btn-lg">Partidos</button></p>
+<p><button type="submit" onclick="location.href='/Home/Jugadores'" class="btn btn-primary btn-lg">Jugadores</button></p>
+</div>
 <div class="row">
     <div class="bracket">
         <section class="round quarterfinals">
