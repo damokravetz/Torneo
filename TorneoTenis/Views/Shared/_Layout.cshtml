@@ -21,10 +21,6 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Agregar Torneo", "AgregarTorneo", "Home")</li>
-                    <li>@Html.ActionLink("Torneo", "Torneo", "Home")</li>
-                    <li>@Html.ActionLink("Partidos", "Partidos", "Home")</li>
-                    <li>@Html.ActionLink("Torneos", "Torneos", "Home")</li>
                     <li>@Html.ActionLink("Usuario", "TusDatos", "Home")</li>
                     <li>@Html.ActionLink("Salir", "salirSession", "Home")</li>
 
@@ -39,7 +35,7 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
-    @Scripts.Render("~/bundles/archivosjs")
+    
     
     @RenderSection("scripts", required: false)
 </body>

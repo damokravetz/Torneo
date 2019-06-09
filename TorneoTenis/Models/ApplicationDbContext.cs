@@ -11,6 +11,7 @@ namespace TorneoTenis.Models
         public DbSet<Usuario> Usuario{ get; set;}
         public DbSet<Torneo> Torneo { get; set; }
         public DbSet<Jugador> Jugador { get; set; }
+        public DbSet<Partido> Partido { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

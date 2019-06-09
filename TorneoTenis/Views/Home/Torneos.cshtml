@@ -7,7 +7,11 @@
     @{
         foreach (TorneoTenis.Models.Torneo t in Model)
         {
-            @Html.Partial("_Torneo", t);
+         <div class="divtorneo0">
+             <h1>@t.nombre</h1>
+             <p class="lead">@t.cantjdrs jugadores/equipos</p>
+             <p><button type="submit" onclick="location.href='/Home/TorneoMultiple'" class="btn btn-primary btn-lg" value="@t.nombre" name="nombre">Torneo</button></p>
+         </div>
         };
     }
     <div class="divtorneo0">

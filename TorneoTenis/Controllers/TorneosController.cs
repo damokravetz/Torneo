@@ -6,142 +6,16 @@ using System.Web.Mvc;
 using System.Data.Entity;
 using TorneoTenis.Models;
 using System.Data.SqlClient;
+
 namespace TorneoTenis.Controllers
 {
-    public class HomeController : Controller
+    public class TorneosController: Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        public ActionResult Index()
-        {
-            if (getIdSession()==-1)
-            {
-                return View();
-            }
-            else
-            {
-                return View("Torneos", getTorneos(getIdSession()));
-            }
-            
-        }
-
-        public ActionResult TorneoMultiple()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }
-
-        public ActionResult AgregarTorneo()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }
-
-        public ActionResult Torneos()
-        {
-            if (getIdSession()==-1)
-            {
-                return View("Index");
-            }
-            return View(getTorneos(getIdSession()));
-        }
-        /*public ActionResult Torneo()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }
-        public ActionResult Partidos()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }
-        public ActionResult Jugadores()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }*/
-        public ActionResult TusDatos()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                Usuario usuario = getUsuario(getIdSession());
-                return View(usuario);
-            }
-        }
-        [HttpPost]
-        public ActionResult AgregarUsuario(Usuario newUser)
-        {
-            Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE email=@email", new SqlParameter("@email", newUser.email)).FirstOrDefault();
-            if (usuario == null)
-            {
-                db.Usuario.Add(new Usuario { nombre = newUser.nombre, apellido = newUser.apellido, email = newUser.email, pass = newUser.pass });
-                db.SaveChanges();
-                ViewBag.Useradd = "Usuario registrado con exito";
-
-            }
-            else
-            {
-                ViewBag.Useradd = "El usuario ya se encuentra registrado";
-            }
-            return View("Index");
-        }
-        [HttpPost]
-        public ActionResult Login(String email, String pass)
-        {
-            Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE email=@email", new SqlParameter("@email", email)).FirstOrDefault();
-            if (usuario != null)
-            {
-                if (usuario.pass.Equals(pass))
-                {
-                    Session["idusuario"] = usuario.Id;
-                    //HttpCookie miCookie = new HttpCookie("Userid", usuario.Id.ToString());
-                    //miCookie.Expires.AddDays(1);
-                    //HttpContext.Response.SetCookie(miCookie);
-                    //HttpCookie miCookie1 = HttpContext.Request.Cookies["Userid"];
-                    return View("Torneos", getTorneos(getIdSession()));
-                }
-
-            }
-            ViewBag.Login = "Email o Contraseña incorrectos";
-            return View("Index");
-        }
 
 
         [HttpPost]
-        public ActionResult GuardarTorneo(String nombre , int cantjgdrs)
+        public ActionResult GuardarTorneo(String nombre, int cantjgdrs)
         {
             Torneo t = new Torneo { IdUsuario = getIdSession(), nombre = nombre, cantjdrs = cantjgdrs };
             if (getTorneo(t.nombre, getUsuario(t.IdUsuario)) == null)
@@ -156,12 +30,6 @@ namespace TorneoTenis.Controllers
                 return View("AgregarTorneo");
             }
         }
-        public int ManejarCookie()
-        {
-            HttpCookie miCookie1 = HttpContext.Request.Cookies["Userid"];
-            int id = Int32.Parse(miCookie1.Value);
-            return id;
-        }
         public List<Torneo> getTorneos(int id)
         {
             List<Torneo> torneos = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", id)).ToList();
@@ -171,7 +39,7 @@ namespace TorneoTenis.Controllers
         {
             SqlParameter nom = new SqlParameter("@nombre", nombre);
             SqlParameter idusu = new SqlParameter("@idusuario", usuario.Id);
-            Torneo t = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE nombre=@nombre AND IdUsuario=@idusuario",nom,idusu).FirstOrDefault();
+            Torneo t = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE nombre=@nombre AND IdUsuario=@idusuario", nom, idusu).FirstOrDefault();
             return t;
         }
         public List<Jugador> getJugadores(Torneo t)
@@ -205,20 +73,15 @@ namespace TorneoTenis.Controllers
         public int getIdSession()
         {
             int id;
-            if (Session["idusuario"]!=null)
+            if (Session["idusuario"] != null)
             {
-                id =Int32.Parse(Session["idusuario"].ToString());
+                id = Int32.Parse(Session["idusuario"].ToString());
             }
             else
             {
                 id = -1;
             }
             return id;
-        }
-        public ActionResult salirSession()
-        {
-            Session.Remove("idusuario");
-            return View("Index");
         }
         public void agregarJugador(Jugador j)
         {
@@ -230,11 +93,11 @@ namespace TorneoTenis.Controllers
             db.Partido.Add(p);
             db.SaveChanges();
         }
-        public bool validarPartido(Torneo t, Partido p, List<Partido>ps)
+        public bool validarPartido(Torneo t, Partido p, List<Partido> ps)
         {
             bool res;
-            int maxpartidos = (t.cantjdrs / 2) + (t.cantjdrs/4)+(t.cantjdrs/8)+(t.cantjdrs/16);
-            if (maxpartidos>=ps.Count)
+            int maxpartidos = (t.cantjdrs / 2) + (t.cantjdrs / 4) + (t.cantjdrs / 8) + (t.cantjdrs / 16);
+            if (maxpartidos >= ps.Count)
             {
                 res = false;
             }
@@ -298,13 +161,13 @@ namespace TorneoTenis.Controllers
                         }
                         break;
                 }
-                res= true;
+                res = true;
             }
             return res;
         }
         public bool validarJugador(Torneo t, Jugador j)
         {
-            bool grupovalido=false;
+            bool grupovalido = false;
             switch (t.cantjdrs)
             {
                 case 2:
@@ -320,13 +183,13 @@ namespace TorneoTenis.Controllers
                     }
                     break;
                 case 8:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b")|| j.grupo.Equals("c") || j.grupo.Equals("d"))
+                    if (j.grupo.Equals("a") || j.grupo.Equals("b") || j.grupo.Equals("c") || j.grupo.Equals("d"))
                     {
                         grupovalido = true;
                     }
                     break;
                 case 16:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b") || j.grupo.Equals("c") || j.grupo.Equals("d")|| j.grupo.Equals("e") || j.grupo.Equals("f") || j.grupo.Equals("g") || j.grupo.Equals("h"))
+                    if (j.grupo.Equals("a") || j.grupo.Equals("b") || j.grupo.Equals("c") || j.grupo.Equals("d") || j.grupo.Equals("e") || j.grupo.Equals("f") || j.grupo.Equals("g") || j.grupo.Equals("h"))
                     {
                         grupovalido = true;
                     }
@@ -337,9 +200,9 @@ namespace TorneoTenis.Controllers
             int jsgrupo = 0;
             int i = 0;
             List<Jugador> jugadores = getJugadores(t);
-            if (jugadores.Count>=t.cantjdrs)
+            if (jugadores.Count >= t.cantjdrs)
             {
-                res= false;
+                res = false;
             }
             else
             {
@@ -354,12 +217,13 @@ namespace TorneoTenis.Controllers
                         jsgrupo++;
                     }
                 }
-                if (nombreigual == false && jsgrupo < 2 && grupovalido==true)
+                if (nombreigual == false && jsgrupo < 2 && grupovalido == true)
                 {
-                    res= true;
+                    res = true;
                 }
-                else{
-                    res= false;
+                else
+                {
+                    res = false;
                 }
             }
             return res;
