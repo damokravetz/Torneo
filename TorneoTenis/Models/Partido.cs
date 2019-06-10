@@ -14,5 +14,6 @@ namespace TorneoTenis.Models
         public String pt1 { get; set; }
         public String pt2 { get; set; }
         public int fase { get; set; }
+        public int IdGanador { get; set; }
     }
 }

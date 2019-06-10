@@ -1,4 +1,4 @@
-﻿
+﻿@model TorneoTenis.Models.TorneoDatos
 @{
     ViewBag.Title = "TorneoMultiple";
 }
@@ -187,13 +187,13 @@
     </div>
     <div class="col-sm-6">
         <div>
-            <form>
+            <form action="/Torneos/insertarJugador" method="post">
                 <h3>Agregar Jugadores</h3>
                 <p>Jugador</p>
-                <p><input type="text" class="form-control"></p>
+                <p><input type="text" class="form-control" name="nombre"></p>
                 <div>
                     <p>Grupo</p>
-                    <select class="form-control" id="cantjdrs" name="cantjgdrs">
+                    <select class="form-control" id="grupo" name="grupo">
                         <option>Seleccionar Grupo</option>
                         <option value="a">A</option>
                         <option value="b">B</option>
@@ -206,7 +206,7 @@
                     </select>
                 </div>
                 <p></p>
-                <p><a class="btn btn-primary btn-lg">Agregar Jugador</a></p>
+                <p><button type="submit" class="btn btn-primary btn-lg">Agregar Jugador</button></p>
             </form>
         </div>
     </div>
@@ -226,7 +226,7 @@
                     <div style="float:left">
                         <p>Jugador 1</p>
                         <select class="form-control">
-                            <option value="">Seleccionar Jugadores</option>
+                            <option value="">Seleccionar Jugador</option>
                         </select>
                     </div>
                     <div>
@@ -238,13 +238,19 @@
                     <div style="float:left">
                         <p>Jugador 2</p>
                         <select class="form-control">
-                            <option value="">Seleccionar Jugadores</option>
+                            <option value="">Seleccionar Jugador</option>
                         </select>
                     </div>
                     <div>
                         <p>Puntaje</p>
                         <input type="text" class="form-control">
                     </div>
+                </div>
+                <p>Ganador</p>
+                <div>
+                    <select class="form-control">
+                        <option value="">Seleccionar Ganador</option>
+                    </select>
                 </div>
                 <p></p><a class="btn btn-primary btn-lg">Guardar</a>
             </div>

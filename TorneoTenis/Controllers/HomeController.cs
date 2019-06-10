@@ -11,6 +11,14 @@ namespace TorneoTenis.Controllers
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private TorneosController tc = new TorneosController();
+
+        [HttpPost]
+        public ActionResult TorneoMultiple(String nombre)
+        {
+            TorneoDatos td = tc.getTorneoDatos(nombre, getIdSession());
+            return View("TorneoMultiple", tc);
+        }
         public ActionResult Index()
         {
             if (getIdSession()==-1)
@@ -22,18 +30,6 @@ namespace TorneoTenis.Controllers
                 return View("Torneos", getTorneos(getIdSession()));
             }
             
-        }
-
-        public ActionResult TorneoMultiple()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
         }
 
         public ActionResult AgregarTorneo()
@@ -56,39 +52,7 @@ namespace TorneoTenis.Controllers
             }
             return View(getTorneos(getIdSession()));
         }
-        /*public ActionResult Torneo()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }
-        public ActionResult Partidos()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }
-        public ActionResult Jugadores()
-        {
-            if (getIdSession() == -1)
-            {
-                return View("Index");
-            }
-            else
-            {
-                return View();
-            }
-        }*/
+    
         public ActionResult TusDatos()
         {
             if (getIdSession() == -1)
@@ -156,12 +120,6 @@ namespace TorneoTenis.Controllers
                 return View("AgregarTorneo");
             }
         }
-        public int ManejarCookie()
-        {
-            HttpCookie miCookie1 = HttpContext.Request.Cookies["Userid"];
-            int id = Int32.Parse(miCookie1.Value);
-            return id;
-        }
         public List<Torneo> getTorneos(int id)
         {
             List<Torneo> torneos = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", id)).ToList();
@@ -220,150 +178,5 @@ namespace TorneoTenis.Controllers
             Session.Remove("idusuario");
             return View("Index");
         }
-        public void agregarJugador(Jugador j)
-        {
-            db.Jugador.Add(j);
-            db.SaveChanges();
-        }
-        public void agregarPartido(Partido p)
-        {
-            db.Partido.Add(p);
-            db.SaveChanges();
-        }
-        public bool validarPartido(Torneo t, Partido p, List<Partido>ps)
-        {
-            bool res;
-            int maxpartidos = (t.cantjdrs / 2) + (t.cantjdrs/4)+(t.cantjdrs/8)+(t.cantjdrs/16);
-            if (maxpartidos>=ps.Count)
-            {
-                res = false;
-            }
-            else
-            {
-                int fase;
-                switch (t.cantjdrs)
-                {
-                    case 2:
-                        fase = 1;
-                        break;
-                    case 4:
-                        if (ps.Count < 2)
-                        {
-                            fase = 2;
-                        }
-                        else
-                        {
-                            fase = 1;
-                        }
-                        break;
-                    case 8:
-                        if (ps.Count < 4)
-                        {
-                            fase = 4;
-                        }
-                        else
-                        {
-                            if (ps.Count < 6)
-                            {
-                                fase = 2;
-                            }
-                            else
-                            {
-                                fase = 1;
-                            }
-                        }
-                        break;
-                    case 16:
-                        if (ps.Count < 8)
-                        {
-                            fase = 8;
-                        }
-                        else
-                        {
-                            if (ps.Count < 12)
-                            {
-                                fase = 4;
-                            }
-                            else
-                            {
-                                if (ps.Count < 14)
-                                {
-                                    fase = 2;
-                                }
-                                else
-                                {
-                                    fase = 1;
-                                }
-                            }
-                        }
-                        break;
-                }
-                res= true;
-            }
-            return res;
-        }
-        public bool validarJugador(Torneo t, Jugador j)
-        {
-            bool grupovalido=false;
-            switch (t.cantjdrs)
-            {
-                case 2:
-                    if (j.grupo.Equals("a"))
-                    {
-                        grupovalido = true;
-                    }
-                    break;
-                case 4:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b"))
-                    {
-                        grupovalido = true;
-                    }
-                    break;
-                case 8:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b")|| j.grupo.Equals("c") || j.grupo.Equals("d"))
-                    {
-                        grupovalido = true;
-                    }
-                    break;
-                case 16:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b") || j.grupo.Equals("c") || j.grupo.Equals("d")|| j.grupo.Equals("e") || j.grupo.Equals("f") || j.grupo.Equals("g") || j.grupo.Equals("h"))
-                    {
-                        grupovalido = true;
-                    }
-                    break;
-            }
-            bool res;
-            bool nombreigual = false;
-            int jsgrupo = 0;
-            int i = 0;
-            List<Jugador> jugadores = getJugadores(t);
-            if (jugadores.Count>=t.cantjdrs)
-            {
-                res= false;
-            }
-            else
-            {
-                while (i < jugadores.Count && jsgrupo < 2 && nombreigual == false)
-                {
-                    if (jugadores[i].nombre.Equals(j.nombre))
-                    {
-                        nombreigual = true;
-                    }
-                    if (jugadores[i].grupo.Equals(j.grupo))
-                    {
-                        jsgrupo++;
-                    }
-                }
-                if (nombreigual == false && jsgrupo < 2 && grupovalido==true)
-                {
-                    res= true;
-                }
-                else{
-                    res= false;
-                }
-            }
-            return res;
-        }
-
     }
 }
