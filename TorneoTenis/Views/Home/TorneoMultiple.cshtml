@@ -97,13 +97,13 @@
         switch (Model.torneo.cantjdrs)
         {
             case 2:
-                @Html.Partial("Torneo2"Model.partidos)
+                @Html.Partial("Torneo2",Model.partidos)
                 break;
             case 4:
-                @Html.Partial("Torneo4"Model.partidos)
+                @Html.Partial("Torneo4",Model.partidos)
                 break;
             case 8:
-                @Html.Partial("Torneo8"Model.partidos)
+                @Html.Partial("Torneo8",Model.partidos)
                 break;
             case 16:
                 @Html.Partial("Torneo16",Model.partidos)
