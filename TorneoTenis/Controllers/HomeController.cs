@@ -41,7 +41,7 @@ namespace TorneoTenis.Controllers
         }
 
         [HttpPost]
-        public ActionResult agregarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, String ganador, String nombretorneo)
+        public ActionResult agregarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, String ganador, int Id)
         {
             if (getIdSession() == -1)
             {
@@ -49,13 +49,13 @@ namespace TorneoTenis.Controllers
             }
             else
             {
-                TorneoDatos td = tc.insertarPartido(jgdr1,jgdr2,ptje1,ptje2,ganador,nombretorneo,getIdSession());
+                TorneoDatos td = tc.insertarPartido(jgdr1,jgdr2,ptje1,ptje2,ganador,Id,getIdSession());
                 return View("TorneoMultiple", td);
             }
             
         }
         [HttpPost]
-        public ActionResult agregarJugador(String nombre, String grupo, int Id)
+        public ActionResult agregarJugador(String nombre, int Id)
         {
             if (getIdSession() == -1)
             {
@@ -63,7 +63,7 @@ namespace TorneoTenis.Controllers
             }
             else
             {
-                TorneoDatos td = tc.insertarJugador(nombre, grupo, Id, getIdSession());
+                TorneoDatos td = tc.insertarJugador(nombre, Id, getIdSession());
                 return View("TorneoMultiple", td);
             }
 
@@ -129,10 +129,6 @@ namespace TorneoTenis.Controllers
                 if (usuario.pass.Equals(pass))
                 {
                     Session["idusuario"] = usuario.Id;
-                    //HttpCookie miCookie = new HttpCookie("Userid", usuario.Id.ToString());
-                    //miCookie.Expires.AddDays(1);
-                    //HttpContext.Response.SetCookie(miCookie);
-                    //HttpCookie miCookie1 = HttpContext.Request.Cookies["Userid"];
                     return View("Torneos", tc.getTorneos(getIdSession()));
                 }
 
@@ -146,7 +142,7 @@ namespace TorneoTenis.Controllers
         public ActionResult GuardarTorneo(String nombre , int cantjgdrs)
         {
             Torneo t = new Torneo { IdUsuario = getIdSession(), nombre = nombre, cantjdrs = cantjgdrs };
-            if (tc.getTorneo(t.nombre, getUsuario(t.IdUsuario)) == null)
+            if (tc.getTorneo(t.Id, getUsuario(t.IdUsuario)) == null)
             {
                 db.Torneo.Add(t);
                 db.SaveChanges();

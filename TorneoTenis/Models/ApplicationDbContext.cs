@@ -13,6 +13,5 @@ namespace TorneoTenis.Models
         public DbSet<Jugador> Jugador { get; set; }
         public DbSet<Partido> Partido { get; set; }
 
-       
     }
 }

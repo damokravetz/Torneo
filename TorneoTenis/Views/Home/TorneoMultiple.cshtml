@@ -2,22 +2,22 @@
 @{
     int cantjres = Model.torneo.cantjdrs - Model.jugadores.Count;
 }
+
 <p></p>
 <div style="text-align:center">
     <div class="btn-group">
-        <button class="btn btn-primary btn-lg" onclick="abrirSeccion('torneo')">Torneo</button>
         <button class="btn btn-primary btn-lg" onclick="abrirSeccion('jugadores')">Jugadores</button>
         <button class="btn btn-primary btn-lg" onclick="abrirSeccion('partidos')">Partidos</button>
     </div>
 </div>
-<div id="jugadores" class="seccion" style="display:none">
+<div id="jugadores" class="seccion" style="display:block">
     <div class="col-sm-6">
         <h3>Jugadores Agregados - Cantidad restante:@cantjres</h3>
         <ul class="list-group">
             @{
                 for (int i = 0; i < Model.jugadores.Count; i++)
                 {
-                    <li class="list-group-item">Jugador: @Model.jugadores[i].nombre Grupo: @Model.jugadores[i].grupo</li>
+                    <li class="list-group-item">Jugador: @Model.jugadores[i].nombre</li>
                 }
             }
         </ul>
@@ -29,42 +29,10 @@
                 <p>Jugador</p>
                 <p><input type="text" class="form-control" name="nombre"></p>
                 <div>
-                    <p>Grupo</p>
-                    <select class="form-control" id="grupo" name="grupo">
-                        <option>Seleccionar Grupo</option>
-                        @{
-                            switch (Model.torneo.cantjdrs)
-                            {
-                                case 2:
-                                    <option value="a">A</option>
-                                    break;
-                                case 4:
-                                    <option value="a">A</option>
-                                    <option value="b">B</option>
-                                    break;
-                                case 8:
-                                    <option value="a">A</option>
-                                    <option value="b">B</option>
-                                    <option value="c">C</option>
-                                    <option value="d">D</option>
-                                    break;
-                                case 16:
-                                    <option value="a">A</option>
-                                    <option value="b">B</option>
-                                    <option value="c">C</option>
-                                    <option value="d">D</option>
-                                    <option value="e">E</option>
-                                    <option value="f">F</option>
-                                    <option value="g">G</option>
-                                    <option value="h">H</option>
-                                    break;
-                            }
-                        }
-                    </select>
                     <input type="hidden" name="Id" value="@Model.torneo.Id" />
                 </div>
                 <p></p>
-                <p><button type="submit"  class="btn btn-primary btn-lg">Agregar Jugador</button></p>
+                <p><button type="submit" class="btn btn-primary btn-lg">Agregar Jugador</button></p>
             </form>
         </div>
     </div>
@@ -80,73 +48,70 @@
     </div>
     <div class="col-sm-6">
         <h3>Agregar Partido:</h3>
-        <div>
-            <div style="float:left">
-                <p>Jugador 1</p>
-                <select class="form-control">
-                    <option value="">Seleccionar Jugador</option>
-                </select>
+        <form action="/home/agregarPartido/@Model.torneo.Id" method="post">
+            <div>
+                <div style="float:left">
+                    <p>Jugador 1</p>
+                    <select class="form-control" id="selec1" name="jgdr1">
+                        <option value="">Seleccionar Jugador</option>
+                        @{
+                            for (int i = 0; i < Model.jugadores.Count; i++)
+                            {
+                                <option value="@Model.jugadores[i].nombre">@Model.jugadores[i].nombre</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div>
+                    <p>Puntaje</p>
+                    <input type="text" class="form-control" name="ptje1">
+                </div>
             </div>
             <div>
-                <p>Puntaje</p>
-                <input type="text" class="form-control">
+                <div style="float:left">
+                    <p>Jugador 2</p>
+                    <select class="form-control" id="selec2" name="jgdr2">
+                        <option value="">Seleccionar Jugador</option>
+                        @{
+                            for (int i = 0; i < Model.jugadores.Count; i++)
+                            {
+                                <option value="@Model.jugadores[i].nombre">@Model.jugadores[i].nombre</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div>
+                    <p>Puntaje</p>
+                    <input type="text" class="form-control" name="ptje2">
+                </div>
             </div>
-        </div>
-        <div>
-            <div style="float:left">
-                <p>Jugador 2</p>
-                <select class="form-control">
-                    <option value="">Seleccionar Jugador</option>
+            <p>Ganador</p>
+            <div>
+                <select class="form-control" id="selecganador" name="ganador">
+                    <option value="">Seleccionar Ganador</option>
+                    @{
+                        for (int i = 0; i < Model.jugadores.Count; i++)
+                        {
+                            <option value="@Model.jugadores[i].nombre">@Model.jugadores[i].nombre</option>
+                        }
+                    }
                 </select>
             </div>
-            <div>
-                <p>Puntaje</p>
-                <input type="text" class="form-control">
-            </div>
-        </div>
-        <p>Ganador</p>
-        <div>
-            <select class="form-control">
-                <option value="">Seleccionar Ganador</option>
-            </select>
-        </div>
-        <p></p><a class="btn btn-primary btn-lg">Guardar</a>
+            <p></p><button class="btn btn-primary btn-lg" type="submit">Guardar</button>
+        </form>
     </div>
-</div>
-<div id="torneo" class="seccion">
-    <div class="alert alert-success" role="alert" style="margin-top:20px; text-align:center;">
-        Ganador: @Model.torneo.nombre
-    </div>
-    @{
-        switch (Model.torneo.cantjdrs)
-        {
-            case 2:
-                @Html.Partial("Torneo2",Model.partidos)
-                break;
-            case 4:
-                @Html.Partial("Torneo4",Model.partidos)
-                break;
-            case 8:
-                @Html.Partial("Torneo8",Model.partidos)
-                break;
-            case 16:
-                @Html.Partial("Torneo16",Model.partidos)
-                break;
-        }
-    }
-
 </div>
 
 
 
 <script type="text/javascript">
     function abrirSeccion(seccion) {
-            var i;
-            var x = document.getElementsByClassName("seccion");
-            for (i = 0; i < x.length; i++) {
-                x[i].style.display = "none";
-            }
-            document.getElementById(seccion).style.display = "block";
+        var i;
+        var x = document.getElementsByClassName("seccion");
+        for (i = 0; i < x.length; i++) {
+            x[i].style.display = "none";
         }
+        document.getElementById(seccion).style.display = "block";
+    }
 
 </script>
