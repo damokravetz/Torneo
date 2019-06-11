@@ -21,17 +21,54 @@ namespace TorneoTenis.Controllers
             }
             else
             {
-                return View("Torneos", getTorneos(getIdSession()));
+                return View("Torneos", tc.getTorneos(getIdSession()));
             }
             
         }
         [HttpGet]
         public ActionResult TorneoMultiple(int Id)
         {
-            TorneoDatos td=tc.getTorneoDatos(Id, getIdSession());
-            int cantj=td.torneo.cantjdrs;
-            return View(td);
+            if (getIdSession() == -1)
+            {
+                return View("Index");
+            }
+            else
+            {
+                TorneoDatos td = tc.getTorneoDatos(Id, getIdSession());
+                return View(td);
+            }
+            
         }
+
+        [HttpPost]
+        public ActionResult agregarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, String ganador, String nombretorneo)
+        {
+            if (getIdSession() == -1)
+            {
+                return View("Index");
+            }
+            else
+            {
+                TorneoDatos td = tc.insertarPartido(jgdr1,jgdr2,ptje1,ptje2,ganador,nombretorneo,getIdSession());
+                return View("TorneoMultiple", td);
+            }
+            
+        }
+        [HttpPost]
+        public ActionResult agregarJugador(String nombre, String grupo, int Id)
+        {
+            if (getIdSession() == -1)
+            {
+                return View("Index");
+            }
+            else
+            {
+                TorneoDatos td = tc.insertarJugador(nombre, grupo, Id, getIdSession());
+                return View("TorneoMultiple", td);
+            }
+
+        }
+
 
         public ActionResult AgregarTorneo()
         {
@@ -51,7 +88,7 @@ namespace TorneoTenis.Controllers
             {
                 return View("Index");
             }
-            return View(getTorneos(getIdSession()));
+            return View(tc.getTorneos(getIdSession()));
         }
     
         public ActionResult TusDatos()
@@ -96,7 +133,7 @@ namespace TorneoTenis.Controllers
                     //miCookie.Expires.AddDays(1);
                     //HttpContext.Response.SetCookie(miCookie);
                     //HttpCookie miCookie1 = HttpContext.Request.Cookies["Userid"];
-                    return View("Torneos", getTorneos(getIdSession()));
+                    return View("Torneos", tc.getTorneos(getIdSession()));
                 }
 
             }
@@ -109,11 +146,11 @@ namespace TorneoTenis.Controllers
         public ActionResult GuardarTorneo(String nombre , int cantjgdrs)
         {
             Torneo t = new Torneo { IdUsuario = getIdSession(), nombre = nombre, cantjdrs = cantjgdrs };
-            if (getTorneo(t.nombre, getUsuario(t.IdUsuario)) == null)
+            if (tc.getTorneo(t.nombre, getUsuario(t.IdUsuario)) == null)
             {
                 db.Torneo.Add(t);
                 db.SaveChanges();
-                return View("Torneos", getTorneos(getIdSession()));
+                return View("Torneos", tc.getTorneos(getIdSession()));
             }
             else
             {
@@ -121,24 +158,7 @@ namespace TorneoTenis.Controllers
                 return View("AgregarTorneo");
             }
         }
-        public List<Torneo> getTorneos(int id)
-        {
-            List<Torneo> torneos = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", id)).ToList();
-            return torneos;
-        }
-        public Torneo getTorneo(String nombre, Usuario usuario)
-        {
-            SqlParameter nom = new SqlParameter("@nombre", nombre);
-            SqlParameter idusu = new SqlParameter("@idusuario", usuario.Id);
-            Torneo t = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE nombre=@nombre AND IdUsuario=@idusuario",nom,idusu).FirstOrDefault();
-            return t;
-        }
-        public List<Jugador> getJugadores(Torneo t)
-        {
-            SqlParameter idtorneo = new SqlParameter("@idtorneo", t.Id);
-            List<Jugador> jugadores = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadores WHERE IdTorneo=@idtorneo", idtorneo).ToList();
-            return jugadores;
-        }
+
         public List<Partido> getPartidos(Torneo t)
         {
             SqlParameter idtorneo = new SqlParameter("@idtorneo", t.Id);
@@ -151,16 +171,6 @@ namespace TorneoTenis.Controllers
             return usuario;
         }
 
-        public TorneoDatos getTorneoDatos(String nombre)
-        {
-            int id = getIdSession();
-            Usuario usuario = getUsuario(id);
-            Torneo torneo = getTorneo(nombre, usuario);
-            List<Jugador> jugadores = getJugadores(torneo);
-            List<Partido> partidos = getPartidos(torneo);
-            TorneoDatos td = new TorneoDatos { torneo = torneo, jugadores = jugadores, partidos = partidos };
-            return td;
-        }
         public int getIdSession()
         {
             int id;

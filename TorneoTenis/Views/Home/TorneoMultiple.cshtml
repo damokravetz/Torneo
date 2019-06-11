@@ -17,14 +17,14 @@
             @{
                 for (int i = 0; i < Model.jugadores.Count; i++)
                 {
-                    <li class="list-group-item">Jugador:@Model.jugadores[i].nombre Grupo:@Model.jugadores[i].grupo:</li>
+                    <li class="list-group-item">Jugador: @Model.jugadores[i].nombre Grupo: @Model.jugadores[i].grupo</li>
                 }
             }
         </ul>
     </div>
     <div class="col-sm-6">
         <div>
-            <form action="/Torneos/insertarJugador" method="post">
+            <form action="/Home/agregarJugador" method="post">
                 <h3>Agregar Jugadores</h3>
                 <p>Jugador</p>
                 <p><input type="text" class="form-control" name="nombre"></p>
@@ -32,18 +32,39 @@
                     <p>Grupo</p>
                     <select class="form-control" id="grupo" name="grupo">
                         <option>Seleccionar Grupo</option>
-                        <option value="a">A</option>
-                        <option value="b">B</option>
-                        <option value="c">C</option>
-                        <option value="d">D</option>
-                        <option value="e">E</option>
-                        <option value="f">F</option>
-                        <option value="g">G</option>
-                        <option value="h">H</option>
+                        @{
+                            switch (Model.torneo.cantjdrs)
+                            {
+                                case 2:
+                                    <option value="a">A</option>
+                                    break;
+                                case 4:
+                                    <option value="a">A</option>
+                                    <option value="b">B</option>
+                                    break;
+                                case 8:
+                                    <option value="a">A</option>
+                                    <option value="b">B</option>
+                                    <option value="c">C</option>
+                                    <option value="d">D</option>
+                                    break;
+                                case 16:
+                                    <option value="a">A</option>
+                                    <option value="b">B</option>
+                                    <option value="c">C</option>
+                                    <option value="d">D</option>
+                                    <option value="e">E</option>
+                                    <option value="f">F</option>
+                                    <option value="g">G</option>
+                                    <option value="h">H</option>
+                                    break;
+                            }
+                        }
                     </select>
+                    <input type="hidden" name="Id" value="@Model.torneo.Id" />
                 </div>
                 <p></p>
-                <p><button type="submit" class="btn btn-primary btn-lg">Agregar Jugador</button></p>
+                <p><button type="submit"  class="btn btn-primary btn-lg">Agregar Jugador</button></p>
             </form>
         </div>
     </div>

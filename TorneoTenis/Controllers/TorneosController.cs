@@ -52,7 +52,7 @@ namespace TorneoTenis.Controllers
         public List<Jugador> getJugadores(Torneo t)
         {
             SqlParameter idtorneo = new SqlParameter("@idtorneo", t.Id);
-            List<Jugador> jugadores = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadores WHERE IdTorneo=@idtorneo", idtorneo).ToList();
+            List<Jugador> jugadores = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadors WHERE IdTorneo=@idtorneo", idtorneo).ToList();
             return jugadores;
         }
         public List<Partido> getPartidos(Torneo t)
@@ -66,7 +66,6 @@ namespace TorneoTenis.Controllers
             Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE Id=@id", new SqlParameter("@id", id)).FirstOrDefault();
             return usuario;
         }
-
         public TorneoDatos getTorneoDatos(int idtorneo, int id)
         {
             Usuario usuario = getUsuario(id);
@@ -85,7 +84,6 @@ namespace TorneoTenis.Controllers
             TorneoDatos td = new TorneoDatos { torneo = torneo, jugadores = jugadores, partidos = partidos };
             return td;
         }
-
         public Jugador buscarJugador(String nombre, List<Jugador> js)
         {
             Jugador j = null;
@@ -100,20 +98,27 @@ namespace TorneoTenis.Controllers
             }
             return j;
         }
-        public ActionResult insertarJugador(String nombretorneo, String nombre, String grupo, int id)
+        public TorneoDatos insertarJugador(String nombre, String grupo, int Id, int idusuario)
         {
-            TorneoDatos td = getTorneoDatos(nombretorneo, id);
+            TorneoDatos td = getTorneoDatos(Id, idusuario);
             Jugador j = new Jugador { IdTorneo = td.torneo.Id, nombre=nombre, grupo= grupo[0] };
             if(validarJugador(td.torneo, j, td.jugadores))
             {
                 agregarJugador(j);
                 td.jugadores.Add(j);
             }
-            ViewBag.Seccion = "Jugadores";
-            return View("TorneoMultiple", td);
+            return td;
         }
-        public ActionResult insertarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, String ganador , String nombretorneo, int id)
+        public TorneoDatos insertarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, String ganador , String nombretorneo, int id)
         {
+            String perdedor;
+            if (ganador.Equals(jgdr1))
+            {
+                perdedor = jgdr2;
+            }
+            else{
+                perdedor = jgdr1;
+            }
             TorneoDatos td = getTorneoDatos(nombretorneo, id);
             Jugador j1 = buscarJugador(jgdr1,td.jugadores);
             Jugador j2 = buscarJugador(jgdr2, td.jugadores);
@@ -121,18 +126,22 @@ namespace TorneoTenis.Controllers
             Partido p=null;
             if (j1!=null&&j2!=null )
             {
-                p = new Partido{ IdJgdr1 = j1.Id, IdJgdr2 = j2.Id, IdTorneo = td.torneo.Id, pt1=ptje1, pt2=ptje2, fase=estimarFase(td.torneo,td.partidos), IdGanador=jganador.Id };
+                p = new Partido{ IdJgdr1 = j1.Id, IdJgdr2 = j2.Id, IdTorneo = td.torneo.Id, pt1=ptje1, pt2=ptje2, fase=estimarFase(td.torneo,td.partidos), IdGanador=jganador.Id, };
             }
-            if(validarPartido(td.torneo, p, td.partidos))
+            if(validarPartido(td.torneo, p, td.partidos, j1,j2))
             {
                 agregarPartido(p);
                 td.partidos.Add(p);
             }
-            ViewBag.Seccion = "Partidos";
-            return View("TorneoMultiple", td);
+            return td;
         }
         public void agregarJugador(Jugador j)
         {
+            //SqlParameter idtorneo = new SqlParameter("@idtorneo", j.IdTorneo);
+            //SqlParameter nombre = new SqlParameter("@nombre", j.nombre);
+            //SqlParameter grupo = new SqlParameter("@grupo", j.grupo);
+            //db.Jugador.SqlQuery("INSERT INTO dbo.Jugadores (IdTorneo, nombre, grupo), VALUES ("+j.IdTorneo+", "+j.nombre+", "+j.grupo+");");
+
             db.Jugador.Add(j);
             db.SaveChanges();
         }
@@ -229,11 +238,11 @@ namespace TorneoTenis.Controllers
             bool res = false;
             while (i<ps.Count&&p1==null&&p2==null)
             {
-                if ((ps[i].IdJgdr1==p.IdJgdr1|| ps[i].IdJgdr2 == p.IdJgdr1) && ps[i].fase==fase1 && ps[i].IdGanador==p.IdJgdr1)
+                if (ps[i].ganador.Equals(p.ganador)||ps[i].fase==fase1)
                 {
                     p1 = ps[i];
                 }
-                if ((ps[i].IdJgdr1 == p.IdJgdr2 || ps[i].IdJgdr2 == p.IdJgdr2) && ps[i].fase == fase1 && ps[i].IdGanador == p.IdJgdr2)
+                if (ps[i].ganador.Equals(p.perdedor) && ps[i].fase == fase1)
                 {
                     p2 = ps[i];
                 }
@@ -252,9 +261,10 @@ namespace TorneoTenis.Controllers
             }
             return res;
         }
-        public bool validarPartido(Torneo t, Partido p, List<Partido> ps)
+        public bool validarPartido(Torneo t, Partido p, List<Partido> ps, Jugador j1, Jugador j2)
         {
             bool res = false;
+            bool gruposvalidos = false;
             bool ganadores=false;//tiene que ser true
             bool haypartido=true;//tiene que ser falso
             bool max=true;//tiene que ser falso
@@ -268,7 +278,7 @@ namespace TorneoTenis.Controllers
                 int fase = estimarFase(t, ps);
                 for (int i=0; i<ps.Count;i++)
                 {
-                    if ((ps[i].IdJgdr1==p.IdJgdr1&&ps[i].fase==fase)|| (ps[i].IdJgdr2 == p.IdJgdr2 && ps[i].fase == fase)|| (ps[i].IdJgdr1 == p.IdJgdr2 && ps[i].fase == fase)|| (ps[i].IdJgdr2 == p.IdJgdr1 && ps[i].fase == fase))
+                    if ((ps[i].ganador.Equals(p.ganador)&&ps[i].fase==fase)||(ps[i].ganador.Equals(p.perdedor)&& ps[i].fase == fase)||(ps[i].perdedor.Equals(p.perdedor)&&ps[i].fase == fase)||(ps[i].perdedor.Equals (p.ganador) && ps[i].fase == fase))
                     {
                         haypartido = true;
                     }
@@ -278,6 +288,7 @@ namespace TorneoTenis.Controllers
                     }
                 }
                 ganadores = sonGanadores(ps, p, fase);
+                gruposvalidos = validarGrupo(t,j1,j2,fase);
             }
             if (haypartido==false&&max==false&&ganadores==true)
             {
@@ -285,31 +296,264 @@ namespace TorneoTenis.Controllers
             }
             return res; 
         }
+        public bool validarGrupo(Torneo t, Jugador j1, Jugador j2, int fase)
+        {
+            bool res = false;
+            switch (fase)
+            {
+                case 8:
+                    if (j1.grupo==j2.grupo)
+                    {
+                        res = true;
+                    }
+                    break;
+                case 4:
+                    if (t.cantjdrs == 16)
+                    {
+                        switch (j1.grupo)
+                        {
+                            case 'a':
+                                if (j2.grupo=='b')
+                                {
+                                    res = true;
+                                }
+                                break;
+                            case 'c':
+                                if (j2.grupo == 'd')
+                                {
+                                    res = true;
+                                }
+                                break;
+                            case 'e':
+                                if (j2.grupo == 'f')
+                                {
+                                    res = true;
+                                }
+                                break;
+                            case 'g':
+                                if (j2.grupo == 'h')
+                                {
+                                    res = true;
+                                }
+                                break;
+                            case 'b':
+                                if (j2.grupo == 'a')
+                                {
+                                    res = true;
+                                }
+                                break;
+                            case 'd':
+                                if (j2.grupo == 'c')
+                                {
+                                    res = true;
+                                }
+                                break;
+                            case 'f':
+                                if (j2.grupo == 'e')
+                                {
+                                    res = true;
+                                }
+                                break;
+                            case 'h':
+                                if (j2.grupo == 'g')
+                                {
+                                    res = true;
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        if (j1.grupo.Equals(j2.grupo))
+                        {
+                            res = true;
+                        }
+                    }
+                    break;
+                case 2:
+                    switch (t.cantjdrs)
+                    {
+                        case 4:
+                            if (j1.grupo.Equals(j2.grupo))
+                            {
+                                res = true;
+                            }
+                            break;
+                        case 8:
+                            switch (j1.grupo)
+                            {
+                                case 'a':
+                                    if (j2.grupo=='b')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'c':
+                                    if (j2.grupo == 'd')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'b':
+                                    if (j2.grupo == 'a')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'd':
+                                    if (j2.grupo == 'c')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                            }
+                            break;
+                        case 16:
+                            switch (j1.grupo)
+                            {
+                                case 'a':
+                                    if (j2.grupo=='c'|| j2.grupo == 'd')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'b':
+                                    if (j2.grupo == 'c' || j2.grupo == 'd')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'c':
+                                    if (j2.grupo == 'a' || j2.grupo == 'b')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'd':
+                                    if (j2.grupo == 'a' || j2.grupo == 'b')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'e':
+                                    if (j2.grupo == 'g' || j2.grupo == 'h')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'f':
+                                    if (j2.grupo == 'g' || j2.grupo == 'h')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'g':
+                                    if (j2.grupo == 'e' || j2.grupo == 'f')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'h':
+                                    if (j2.grupo == 'e' || j2.grupo == 'f')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+                case 1:
+                    switch (t.cantjdrs)
+                    {
+                        case 2:
+                            if (j1.grupo.Equals(j2.grupo))
+                            {
+                                res = true;
+                            }
+                            break;
+                        case 4:
+                            if (j1.grupo=='a')
+                            {
+                                if (j1.grupo=='b')
+                                {
+                                    res = true;
+                                }
+                            }
+                            else
+                            {
+                                if (j1.grupo=='b')
+                                {
+                                    if (j1.grupo=='a')
+                                    {
+                                        res = true;
+                                    }
+                                }
+                            }
+                            break;
+                        case 8:
+                            switch (j1.grupo)
+                            {
+                                case 'a':
+                                    if (j2.grupo=='c'|| j2.grupo == 'd')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'b':
+                                    if (j2.grupo == 'c' || j2.grupo == 'd')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'c':
+                                    if (j2.grupo == 'a' || j2.grupo == 'b')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                                case 'd':
+                                    if (j2.grupo == 'a' || j2.grupo == 'b')
+                                    {
+                                        res = true;
+                                    }
+                                    break;
+                            }
+                            break;
+                        case 16:
+                            res = true;
+                            break;
+
+                    }
+                    break;
+            }
+            return res;
+        }
         public bool validarJugador(Torneo t, Jugador j, List<Jugador> js)
         {
             bool grupovalido = false;
             switch (t.cantjdrs)
             {
                 case 2:
-                    if (j.grupo.Equals("a"))
+                    if (j.grupo=='a')
                     {
                         grupovalido = true;
                     }
                     break;
                 case 4:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b"))
+                    if (j.grupo=='a' || j.grupo=='b')
                     {
                         grupovalido = true;
                     }
                     break;
                 case 8:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b") || j.grupo.Equals("c") || j.grupo.Equals("d"))
+                    if (j.grupo=='a' || j.grupo == 'b' || j.grupo == 'c' || j.grupo == 'd')
                     {
                         grupovalido = true;
                     }
                     break;
                 case 16:
-                    if (j.grupo.Equals("a") || j.grupo.Equals("b") || j.grupo.Equals("c") || j.grupo.Equals("d") || j.grupo.Equals("e") || j.grupo.Equals("f") || j.grupo.Equals("g") || j.grupo.Equals("h"))
+                    if (j.grupo == 'a' || j.grupo == 'b' || j.grupo == 'c' || j.grupo == 'd'|| j.grupo == 'e' || j.grupo == 'f' || j.grupo == 'g' || j.grupo == 'h')
                     {
                         grupovalido = true;
                     }
