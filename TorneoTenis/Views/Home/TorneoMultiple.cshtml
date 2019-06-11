@@ -1,6 +1,6 @@
 ﻿@model TorneoTenis.Models.TorneoDatos
 @{
-    ViewBag.Torneo = "TorneoMultiple";
+    int cantjres = Model.torneo.cantjdrs - Model.jugadores.Count;
 }
 <p></p>
 <div style="text-align:center">
@@ -12,11 +12,14 @@
 </div>
 <div id="jugadores" class="seccion" style="display:none">
     <div class="col-sm-6">
-        <h3>Jugadores Agregados - Cantidad restante:</h3>
+        <h3>Jugadores Agregados - Cantidad restante:@cantjres</h3>
         <ul class="list-group">
-
-            <li class="list-group-item">Jugador: Grupo: </li>
-
+            @{
+                for (int i = 0; i < Model.jugadores.Count; i++)
+                {
+                    <li class="list-group-item">Jugador:@Model.jugadores[i].nombre Grupo:@Model.jugadores[i].grupo:</li>
+                }
+            }
         </ul>
     </div>
     <div class="col-sm-6">
