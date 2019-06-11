@@ -13,12 +13,6 @@ namespace TorneoTenis.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private TorneosController tc = new TorneosController();
 
-        [HttpPost]
-        public ActionResult TorneoMultiple(String nombre)
-        {
-            TorneoDatos td = tc.getTorneoDatos(nombre, getIdSession());
-            return View("TorneoMultiple", tc);
-        }
         public ActionResult Index()
         {
             if (getIdSession()==-1)
@@ -30,6 +24,13 @@ namespace TorneoTenis.Controllers
                 return View("Torneos", getTorneos(getIdSession()));
             }
             
+        }
+        [HttpGet]
+        public ActionResult TorneoMultiple(int Id)
+        {
+            TorneoDatos td=tc.getTorneoDatos(Id, getIdSession());
+            int cantj=td.torneo.cantjdrs;
+            return View(td);
         }
 
         public ActionResult AgregarTorneo()

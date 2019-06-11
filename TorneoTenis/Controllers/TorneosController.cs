@@ -18,7 +18,7 @@ namespace TorneoTenis.Controllers
         public ActionResult GuardarTorneo(String nombre, int cantjgdrs, int idusuario)
         {
             Torneo t = new Torneo { IdUsuario = idusuario, nombre = nombre, cantjdrs = cantjgdrs };
-            if (getTorneo(t.nombre, getUsuario(t.IdUsuario)) == null)
+            if (getTorneo(t.Id, getUsuario(t.IdUsuario)) == null)
             {
                 db.Torneo.Add(t);
                 db.SaveChanges();
@@ -34,6 +34,13 @@ namespace TorneoTenis.Controllers
         {
             List<Torneo> torneos = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", id)).ToList();
             return torneos;
+        }
+        public Torneo getTorneo(int idtorneo, Usuario usuario)
+        {
+            SqlParameter idtor = new SqlParameter("@idtorneo", idtorneo);
+            SqlParameter idusu = new SqlParameter("@idusuario", usuario.Id);
+            Torneo t = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE Id=@idtorneo AND IdUsuario=@idusuario", idtor, idusu).FirstOrDefault();
+            return t;
         }
         public Torneo getTorneo(String nombre, Usuario usuario)
         {
@@ -60,6 +67,15 @@ namespace TorneoTenis.Controllers
             return usuario;
         }
 
+        public TorneoDatos getTorneoDatos(int idtorneo, int id)
+        {
+            Usuario usuario = getUsuario(id);
+            Torneo torneo = getTorneo(idtorneo, usuario);
+            List<Jugador> jugadores = getJugadores(torneo);
+            List<Partido> partidos = getPartidos(torneo);
+            TorneoDatos td = new TorneoDatos { torneo = torneo, jugadores = jugadores, partidos = partidos };
+            return td;
+        }
         public TorneoDatos getTorneoDatos(String nombre, int id)
         {
             Usuario usuario = getUsuario(id);

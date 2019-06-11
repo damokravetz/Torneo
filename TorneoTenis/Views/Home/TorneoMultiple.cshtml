@@ -1,6 +1,6 @@
 ﻿@model TorneoTenis.Models.TorneoDatos
 @{
-    ViewBag.Title = "TorneoMultiple";
+    ViewBag.Torneo = "TorneoMultiple";
 }
 <p></p>
 <div style="text-align:center">
@@ -10,172 +10,6 @@
         <button class="btn btn-primary btn-lg" onclick="abrirSeccion('partidos')">Partidos</button>
     </div>
 </div>
-<div id="torneo" class="seccion">
-    <div class="alert alert-success" role="alert" style="margin-top:20px; text-align:center;">
-        Ganador: Pedro
-    </div>
-    <div class="row">
-        <div class="bracket">
-            <section class="round quarterfinals">
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Uno</span></div>
-                                <div class="participant"><span>Ocho</span></div>
-                            </div>
-                        </div>
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant"><span>Dos</span></div>
-                                <div class="participant winner"><span>Siete</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="connector">
-                        <div class="merger"></div>
-                        <div class="line"></div>
-                    </div>
-                </div>
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant"><span>Treis</span></div>
-                                <div class="participant winner"><span>Seis</span></div>
-                            </div>
-                        </div>
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant"><span>Cuatro</span></div>
-                                <div class="participant winner"><span>Cinco</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="connector">
-                        <div class="merger"></div>
-                        <div class="line"></div>
-                    </div>
-                </div>
-            </section>
-            <section class="round semifinals">
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Uno</span></div>
-                                <div class="participant"><span>Dos</span></div>
-                            </div>
-                        </div>
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Seis</span></div>
-                                <div class="participant"><span>Cinco</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="connector">
-                        <div class="merger"></div>
-                        <div class="line"></div>
-                    </div>
-                </div>
-            </section>
-            <section class="round finals">
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Uno</span></div>
-                                <div class="participant"><span>Seis</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
-    <div class="row">
-        <div class="bracket">
-            <section class="round quarterfinals">
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Uno</span></div>
-                                <div class="participant"><span>Ocho</span></div>
-                            </div>
-                        </div>
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant"><span>Dos</span></div>
-                                <div class="participant winner"><span>Siete</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="connector">
-                        <div class="merger"></div>
-                        <div class="line"></div>
-                    </div>
-                </div>
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant"><span>Treis</span></div>
-                                <div class="participant winner"><span>Seis</span></div>
-                            </div>
-                        </div>
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant"><span>Cuatro</span></div>
-                                <div class="participant winner"><span>Cinco</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="connector">
-                        <div class="merger"></div>
-                        <div class="line"></div>
-                    </div>
-                </div>
-            </section>
-            <section class="round semifinals">
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Uno</span></div>
-                                <div class="participant"><span>Dos</span></div>
-                            </div>
-                        </div>
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Seis</span></div>
-                                <div class="participant"><span>Cinco</span></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="connector">
-                        <div class="merger"></div>
-                        <div class="line"></div>
-                    </div>
-                </div>
-            </section>
-            <section class="round finals">
-                <div class="winners">
-                    <div class="matchups">
-                        <div class="matchup">
-                            <div class="participants">
-                                <div class="participant winner"><span>Uno</span></div>
-                                <div class="participant"><span>Seis</span></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </div>
-</div>
-
 <div id="jugadores" class="seccion" style="display:none">
     <div class="col-sm-6">
         <h3>Jugadores Agregados - Cantidad restante:</h3>
@@ -212,53 +46,77 @@
     </div>
 </div>
 
-    <div id="partidos" class="seccion" style="display:none">
-            <div class="col-sm-6">
-                <h3>Partidos:</h3>
-                <ul class="list-group">
-                    <li class="list-group-item">Nadal vs Federer</li>
-                    <li class="list-group-item">Del potro vs </li>
-                </ul>
-            </div>
-            <div class="col-sm-6">
-                <h3>Agregar Partido:</h3>
-                <div>
-                    <div style="float:left">
-                        <p>Jugador 1</p>
-                        <select class="form-control">
-                            <option value="">Seleccionar Jugador</option>
-                        </select>
-                    </div>
-                    <div>
-                        <p>Puntaje</p>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <div>
-                    <div style="float:left">
-                        <p>Jugador 2</p>
-                        <select class="form-control">
-                            <option value="">Seleccionar Jugador</option>
-                        </select>
-                    </div>
-                    <div>
-                        <p>Puntaje</p>
-                        <input type="text" class="form-control">
-                    </div>
-                </div>
-                <p>Ganador</p>
-                <div>
-                    <select class="form-control">
-                        <option value="">Seleccionar Ganador</option>
-                    </select>
-                </div>
-                <p></p><a class="btn btn-primary btn-lg">Guardar</a>
-            </div>
+<div id="partidos" class="seccion" style="display:none">
+    <div class="col-sm-6">
+        <h3>Partidos:</h3>
+        <ul class="list-group">
+            <li class="list-group-item">Nadal vs Federer</li>
+            <li class="list-group-item">Del potro vs </li>
+        </ul>
     </div>
+    <div class="col-sm-6">
+        <h3>Agregar Partido:</h3>
+        <div>
+            <div style="float:left">
+                <p>Jugador 1</p>
+                <select class="form-control">
+                    <option value="">Seleccionar Jugador</option>
+                </select>
+            </div>
+            <div>
+                <p>Puntaje</p>
+                <input type="text" class="form-control">
+            </div>
+        </div>
+        <div>
+            <div style="float:left">
+                <p>Jugador 2</p>
+                <select class="form-control">
+                    <option value="">Seleccionar Jugador</option>
+                </select>
+            </div>
+            <div>
+                <p>Puntaje</p>
+                <input type="text" class="form-control">
+            </div>
+        </div>
+        <p>Ganador</p>
+        <div>
+            <select class="form-control">
+                <option value="">Seleccionar Ganador</option>
+            </select>
+        </div>
+        <p></p><a class="btn btn-primary btn-lg">Guardar</a>
+    </div>
+</div>
+<div id="torneo" class="seccion">
+    <div class="alert alert-success" role="alert" style="margin-top:20px; text-align:center;">
+        Ganador: @Model.torneo.nombre
+    </div>
+    @{
+        switch (Model.torneo.cantjdrs)
+        {
+            case 2:
+                @Html.Partial("Torneo2"Model.partidos)
+                break;
+            case 4:
+                @Html.Partial("Torneo4"Model.partidos)
+                break;
+            case 8:
+                @Html.Partial("Torneo8"Model.partidos)
+                break;
+            case 16:
+                @Html.Partial("Torneo16",Model.partidos)
+                break;
+        }
+    }
+
+</div>
 
 
-    <script type="text/javascript">
-        function abrirSeccion(seccion) {
+
+<script type="text/javascript">
+    function abrirSeccion(seccion) {
             var i;
             var x = document.getElementsByClassName("seccion");
             for (i = 0; i < x.length; i++) {
@@ -267,4 +125,4 @@
             document.getElementById(seccion).style.display = "block";
         }
 
-    </script>
+</script>

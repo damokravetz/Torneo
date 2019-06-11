@@ -10,7 +10,7 @@
          <div class="divtorneo0">
              <h1>@t.nombre</h1>
              <p class="lead">@t.cantjdrs jugadores/equipos</p>
-             <button class="btn btn-primary btn-lg" onclick="location.href = '/Home/TorneoMultiple'" value="@t.nombre" name="nombre">Abrir</button>
+             <button class="btn btn-primary btn-lg" onclick="abrirTorneo('@t.Id')" value="@t.nombre" name="nombre">Abrir</button>
          </div>
         };
     }
@@ -21,7 +21,7 @@
 
 <script type="text/javascript">
     function abrirTorneo(nombre) {
-        @ViewBag.Torneo=nombre;
-        
+        console.log("hola");
+        location.href = '/Home/TorneoMultiple/' + nombre;
     }
 </script>
