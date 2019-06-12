@@ -1,7 +1,9 @@
 ﻿@model TorneoTenis.Models.TorneoDatos
 @{
     int cantjres = Model.torneo.cantjdrs - Model.jugadores.Count;
+    
 }
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
 
 <p></p>
 <div style="text-align:center">
@@ -10,7 +12,7 @@
         <button class="btn btn-primary btn-lg" onclick="abrirSeccion('partidos')">Partidos</button>
     </div>
 </div>
-<div id="jugadores" class="seccion" style="display:block">
+<div id="jugadores" class="seccion" style="display:block ">
     <div class="col-sm-6">
         <h3>Jugadores Agregados - Cantidad restante:@cantjres</h3>
         <ul class="list-group">
@@ -22,28 +24,39 @@
             }
         </ul>
     </div>
-    <div class="col-sm-6">
-        <div>
-            <form action="/Home/agregarJugador" method="post">
-                <h3>Agregar Jugadores</h3>
-                <p>Jugador</p>
-                <p><input type="text" class="form-control" name="nombre"></p>
+
+    @{
+        if (cantjres > 0)
+        {
+            <div class="col-sm-6">
                 <div>
-                    <input type="hidden" name="Id" value="@Model.torneo.Id" />
+                    <form action="/Home/agregarJugador" method="post">
+                        <h3>Agregar Jugadores</h3>
+                        <p>Jugador</p>
+                        <p><input type="text" class="form-control" name="nombre" id="nombrejugador"></p>
+                        <text class="hidden" style="color:red;" id="txtnombreinval">Nombre invalido</text>
+                        <div>
+                            <input type="hidden" name="Id" value="@Model.torneo.Id" />
+                        </div>
+                        <p></p>
+                        <p><button type="button" class="btn btn-secondary btn-lg" id="btnaddjgdr">Agregar Jugador</button></p>
+                    </form>
                 </div>
-                <p></p>
-                <p><button type="submit" class="btn btn-primary btn-lg">Agregar Jugador</button></p>
-            </form>
-        </div>
-    </div>
+            </div>
+        }
+    }
 </div>
 
 <div id="partidos" class="seccion" style="display:none">
     <div class="col-sm-6">
         <h3>Partidos:</h3>
         <ul class="list-group">
-            <li class="list-group-item">Nadal vs Federer</li>
-            <li class="list-group-item">Del potro vs </li>
+            @{
+                for (int i = 0; i < Model.partidos.Count; i++)
+                {
+                    <li class="list-group-item"><text style="color:forestgreen">@Model.partidos[i].ganador @Model.partidos[i].ptganador</text> vs <text style="color:red">@Model.partidos[i].perdedor @Model.partidos[i].ptperdedor</text> <a style="float:right" onclick="location.href = '/Torneos/eliminarPartido/'+@Model.partidos[i].Id">Eliminar</a></li>
+                }
+            }
         </ul>
     </div>
     <div class="col-sm-6">
@@ -52,8 +65,8 @@
             <div>
                 <div style="float:left">
                     <p>Jugador 1</p>
-                    <select class="form-control" id="selec1" name="jgdr1">
-                        <option value="">Seleccionar Jugador</option>
+                    <select class="form-control" id="selec1" name="jgdr1" style="border-color:forestgreen">
+                        <option value="Seleccionar Jugador (Ganador)">Seleccionar Jugador (Ganador)</option>
                         @{
                             for (int i = 0; i < Model.jugadores.Count; i++)
                             {
@@ -63,15 +76,15 @@
                     </select>
                 </div>
                 <div>
-                    <p>Puntaje</p>
-                    <input type="text" class="form-control" name="ptje1">
+                    <p>Puntaje 1 (Opcional)</p>
+                    <input type="text" class="form-control" name="ptje1" id="ptje1" autocomplete="off" placeholder="Ej: 6-2-6">
                 </div>
             </div>
             <div>
                 <div style="float:left">
                     <p>Jugador 2</p>
-                    <select class="form-control" id="selec2" name="jgdr2">
-                        <option value="">Seleccionar Jugador</option>
+                    <select class="form-control" id="selec2" name="jgdr2" style="border-color:red">
+                        <option value="Seleccionar Jugador (Perdedor)">Seleccionar Jugador (Perdedor)</option>
                         @{
                             for (int i = 0; i < Model.jugadores.Count; i++)
                             {
@@ -81,26 +94,17 @@
                     </select>
                 </div>
                 <div>
-                    <p>Puntaje</p>
-                    <input type="text" class="form-control" name="ptje2">
+                    <p>Puntaje 2 (Opcional)</p>
+                    <input type="text" class="form-control" name="ptje2" id="ptje2" autocomplete="off" placeholder="Ej: 4-6-3">
                 </div>
             </div>
-            <p>Ganador</p>
-            <div>
-                <select class="form-control" id="selecganador" name="ganador">
-                    <option value="">Seleccionar Ganador</option>
-                    @{
-                        for (int i = 0; i < Model.jugadores.Count; i++)
-                        {
-                            <option value="@Model.jugadores[i].nombre">@Model.jugadores[i].nombre</option>
-                        }
-                    }
-                </select>
-            </div>
-            <p></p><button class="btn btn-primary btn-lg" type="submit">Guardar</button>
+            <text style="color:red" class="hidden" id="txtpartinval">Un jugador no puede competir contra si mismo</text>
+            <text style="color:gray" class="hidden" id="txtpartinval1">Seleccione 2 jugadores</text>
+            <p></p><button class="btn btn-secondary btn-lg" type="button" id="btnaddpartido">Guardar</button>
         </form>
     </div>
 </div>
+
 
 
 
@@ -114,4 +118,84 @@
         document.getElementById(seccion).style.display = "block";
     }
 
+    $(document).ready(function () {
+        var $regexname = /^([a-zA-Z]{3,16})$/;
+        $('#nombrejugador').on('keypress keydown keyup', function () {
+            if (!$(this).val().match($regexname)) {
+                // there is a mismatch, hence show the error message
+                $('#txtnombreinval').removeClass('hidden');
+                $('#btnaddjgdr').attr('type', 'button');
+                $('#btnaddjgdr').removeClass('btn btn-primary');
+                $('#btnaddjgdr').addClass('btn btn-secondary');
+                
+            }
+            else {
+                // else, do not display message
+                $('#txtnombreinval').addClass('hidden');
+                $('#btnaddjgdr').attr('type', 'submit');
+                $('#btnaddjgdr').removeClass('btn btn-secondary');
+                $('#btnaddjgdr').addClass('btn btn-primary');
+
+            }
+        });
+
+        $('#selec1').change(function () {
+            if ($('#selec1').val() == "Seleccionar Jugador (Ganador)" || $('#selec2').val() == "Seleccionar Jugador (Perdedor)") {
+                $('#txtpartinval1').removeClass('hidden');
+                $('#btnaddpartido').attr('type', 'button');
+                $('#btnaddpartido').removeClass('btn btn-primary');
+                $('#btnaddpartido').addClass('btn btn-secondary');
+            } else {
+                $('#txtpartinval1').addClass('hidden');
+                if ($('#selec1').val() == $('#selec2').val()) {
+                    $('#txtpartinval').removeClass('hidden');
+                    $('#btnaddpartido').attr('type', 'button');
+                    $('#btnaddpartido').removeClass('btn btn-primary');
+                    $('#btnaddpartido').addClass('btn btn-secondary');
+                } else {
+                    $('#txtpartinval').addClass('hidden');
+                    $('#btnaddpartido').attr('type', 'submit');
+                    $('#btnaddpartido').removeClass('btn btn-secondary');
+                    $('#btnaddpartido').addClass('btn btn-primary');
+                }
+            }
+        });
+        $('#selec2').change(function () {
+            if ($('#selec1').val() == "Seleccionar Jugador (Ganador)" || $('#selec2').val() == "Seleccionar Jugador (Perdedor)") {
+                $('#txtpartinval1').removeClass('hidden');
+                $('#btnaddpartido').attr('type', 'button');
+                $('#btnaddpartido').removeClass('btn btn-primary');
+                $('#btnaddpartido').addClass('btn btn-secondary');
+            } else {
+                $('#txtpartinval1').addClass('hidden');
+                if ($('#selec1').val() == $('#selec2').val()) {
+                    $('#txtpartinval').removeClass('hidden');
+                    $('#btnaddpartido').attr('type', 'button');
+                    $('#btnaddpartido').removeClass('btn btn-primary');
+                    $('#btnaddpartido').addClass('btn btn-secondary');
+                } else {
+                    $('#txtpartinval').addClass('hidden');
+                    $('#btnaddpartido').attr('type', 'submit');
+                    $('#btnaddpartido').removeClass('btn btn-secondary');
+                    $('#btnaddpartido').addClass('btn btn-primary');
+                }
+            }
+            
+        });
+        var $regexptje = /[^\d -]+/g;
+        $('#ptje1').on('keypress keydown keyup', function (e) {
+            if (!$('#ptje1').val().match($regexptje) && $('#ptje1').val().length < 20) {
+
+            } else {
+                $('#ptje1').val('');
+            }
+        });
+        $('#ptje2').on('keypress keydown keyup', function () {
+            if (!$('#ptje2').val().match($regexptje) && $('#ptje2').val().length < 20) {
+
+            } else {
+                $('#ptje2').val('');
+            }
+        });
+    });
 </script>

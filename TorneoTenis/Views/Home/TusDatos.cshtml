@@ -2,10 +2,11 @@
 @{
     ViewBag.Title = "TusDatos";
 }
-
-<h2>@Model.nombre</h2>
-<h2>@Model.apellido</h2>
-<h2>@Model.email</h2>
-<h2>@Model.pass</h2>
+<h3>Tu Cuenta:</h3>
+<ul class="list-group" style="width:50%">
+    <li class="list-group-item">Nombre: @Model.nombre</li>
+    <li class="list-group-item">Apellido: @Model.apellido</li>
+    <li class="list-group-item">Email: @Model.email</li>
+</ul>
 
 

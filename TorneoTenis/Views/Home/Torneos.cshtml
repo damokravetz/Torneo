@@ -7,11 +7,12 @@
     @{
         foreach (TorneoTenis.Models.Torneo t in Model)
         {
-         <div class="divtorneo0">
-             <h1>@t.nombre</h1>
-             <p class="lead">@t.cantjdrs jugadores/equipos</p>
-             <button class="btn btn-primary btn-lg" onclick="location.href = '/Home/TorneoMultiple/'+@t.Id" value="@t.nombre" name="nombre">Abrir</button>
-         </div>
+    <div class="divtorneo0">
+        <h1>@t.nombre</h1>
+        <p class="lead">@t.cantjdrs jugadores/equipos</p>
+        <button class="btn btn-primary btn-lg" onclick="location.href = '/Home/TorneoMultiple/'+@t.Id" value="@t.nombre" name="nombre">Abrir</button>
+        <button class="btn btn-primary btn-danger" onclick="location.href = '/Home/eliminarTorneo/'+@t.Id" value="@t.nombre" name="nombre">Eliminar</button>
+    </div>
         };
     }
     <div class="divtorneo0">
@@ -19,9 +20,3 @@
     </div>
 </div>
 
-<script type="text/javascript">
-    function abrirTorneo(id) {
-        console.log("hola");
-        location.href = '/Home/TorneoMultiple/' + id;
-    }
-</script>

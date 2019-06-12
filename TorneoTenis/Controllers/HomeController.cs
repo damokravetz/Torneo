@@ -41,7 +41,7 @@ namespace TorneoTenis.Controllers
         }
 
         [HttpPost]
-        public ActionResult agregarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, String ganador, int Id)
+        public ActionResult agregarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, int Id)
         {
             if (getIdSession() == -1)
             {
@@ -49,7 +49,7 @@ namespace TorneoTenis.Controllers
             }
             else
             {
-                TorneoDatos td = tc.insertarPartido(jgdr1,jgdr2,ptje1,ptje2,ganador,Id,getIdSession());
+                TorneoDatos td = tc.insertarPartido(jgdr1,jgdr2,ptje1,ptje2,Id,getIdSession());
                 return View("TorneoMultiple", td);
             }
             
@@ -68,6 +68,33 @@ namespace TorneoTenis.Controllers
             }
 
         }
+        [HttpGet]
+        public ActionResult eliminarTorneo(int Id)
+        {
+            if (getIdSession() == -1)
+            {
+                return View("Index");
+            }
+            else
+            {
+                tc.eliminarTorneo(Id);
+                return View("Torneos", tc.getTorneos(getIdSession()));
+            }
+        }
+        /*[HttpGet]
+        public ActionResult eliminarPartido(int Id)
+        {
+            if (getIdSession() == -1)
+            {
+                return View("Index");
+            }
+            else
+            {
+                tc.eliminarPartido(Id);
+                return View("TorneoMultiple", tc.getTorneoDatos(idtorneo, getIdSession()));
+                
+            }
+        }*/
 
 
         public ActionResult AgregarTorneo()

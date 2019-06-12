@@ -9,8 +9,8 @@ namespace TorneoTenis.Models
     {
         public int Id { get; set; }
         public int IdTorneo { get; set; }
-        public String pt1 { get; set; }
-        public String pt2 { get; set; }
+        public String ptganador { get; set; }
+        public String ptperdedor { get; set; }
         public String ganador { get; set; }
         public String perdedor { get; set; }
     }

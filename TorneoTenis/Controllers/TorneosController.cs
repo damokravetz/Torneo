@@ -36,6 +36,22 @@ namespace TorneoTenis.Controllers
             List<Torneo> torneos = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", id)).ToList();
             return torneos;
         }
+        public void eliminarTorneo(int Id)
+        {
+            Torneo t = new Torneo() { Id = Id };
+            db.Torneo.Attach(t);
+            db.Torneo.Remove(t);
+            //db.Torneo.SqlQuery("DELETE * FROM dbo.Torneos WHERE Id=@id", new SqlParameter("@id", Id));
+            db.SaveChanges();
+        }
+        public void eliminarPartido(int Id)
+        {
+            Partido p = new Partido() { Id = Id };
+            db.Partido.Attach(p);
+            db.Partido.Remove(p);
+            //db.Torneo.SqlQuery("DELETE * FROM dbo.Torneos WHERE Id=@id", new SqlParameter("@id", Id));
+            db.SaveChanges();
+        }
         public Torneo getTorneo(int idtorneo, Usuario usuario)
         {
             SqlParameter idtor = new SqlParameter("@idtorneo", idtorneo);
@@ -94,27 +110,25 @@ namespace TorneoTenis.Controllers
             }
             return td;
         }
-        public TorneoDatos insertarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, String ganador , int Idtorneo, int id)
+        public TorneoDatos insertarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, int Idtorneo, int id)
         {
-            String perdedor;
-            if (ganador.Equals(jgdr1))
-            {
-                perdedor = jgdr2;
-            }
-            else{
-                perdedor = jgdr1;
-            }
             TorneoDatos td = getTorneoDatos(Idtorneo, id);
             Jugador j1 = buscarJugador(jgdr1,td.jugadores);
             Jugador j2 = buscarJugador(jgdr2, td.jugadores);
             Partido p=null;
-            if (j1!=null&&j2!=null )
+            if (j1!=null&&j2!=null&&jgdr1.Equals(jgdr2)==false )
             {
-                p = new Partido{ IdTorneo = td.torneo.Id, pt1=ptje1, pt2=ptje2, ganador=ganador, perdedor=perdedor };
+                p = new Partido{ IdTorneo = td.torneo.Id, ptganador=ptje1, ptperdedor=ptje2, ganador=jgdr1, perdedor=jgdr2 };
                 agregarPartido(p);
                 td.partidos.Add(p);
             }
             return td;
+        }
+        public Partido getPartido(int Id)
+        {
+            SqlParameter idpartido = new SqlParameter("@idpartido", Id);
+            Partido p = db.Partido.SqlQuery("SELECT * FROM dbo.Partidoes WHERE Id=@idpartido", idpartido).FirstOrDefault();
+            return p;
         }
         public void agregarJugador(Jugador j)
         {
