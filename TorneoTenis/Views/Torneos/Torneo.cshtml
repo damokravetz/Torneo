@@ -30,7 +30,7 @@
         {
             <div class="col-sm-6">
                 <div>
-                    <form action="/Home/agregarJugador" method="post">
+                    <form action="/Torneos/AddJugador" method="post">
                         <h3>Agregar Jugadores</h3>
                         <p>Jugador</p>
                         <p><input type="text" class="form-control" name="nombre" id="nombrejugador"></p>
@@ -54,14 +54,14 @@
             @{
                 for (int i = 0; i < Model.partidos.Count; i++)
                 {
-                    <li class="list-group-item"><text style="color:forestgreen">@Model.partidos[i].ganador @Model.partidos[i].ptganador</text> vs <text style="color:red">@Model.partidos[i].perdedor @Model.partidos[i].ptperdedor</text> <a style="float:right" onclick="location.href = '/Home/eliminarPartido/'+@Model.partidos[i].Id">Eliminar</a></li>
+                    <li class="list-group-item"><text style="color:forestgreen">@Model.partidos[i].ganador @Model.partidos[i].ptganador</text> vs <text style="color:red">@Model.partidos[i].ptperdedor @Model.partidos[i].perdedor</text> <a style="float:right" onclick="location.href = '/Torneos/DelPartido/'+@Model.partidos[i].Id">Eliminar</a></li>
                 }
             }
         </ul>
     </div>
     <div class="col-sm-6">
         <h3>Agregar Partido:</h3>
-        <form action="/home/agregarPartido/@Model.torneo.Id" method="post">
+        <form action="/Torneos/AddPartido/@Model.torneo.Id" method="get">
             <div>
                 <div style="float:left">
                     <p>Jugador 1</p>
@@ -77,7 +77,7 @@
                 </div>
                 <div>
                     <p>Puntaje 1 (Opcional)</p>
-                    <input type="text" class="form-control" name="ptje1" id="ptje1" autocomplete="off" placeholder="Ej: 6-2-6">
+                    <input type="number" class="form-control" name="ptje1" id="ptje1" min="0" max="5" autocomplete="off">
                 </div>
             </div>
             <div>
@@ -95,7 +95,7 @@
                 </div>
                 <div>
                     <p>Puntaje 2 (Opcional)</p>
-                    <input type="text" class="form-control" name="ptje2" id="ptje2" autocomplete="off" placeholder="Ej: 4-6-3">
+                    <input type="number" class="form-control" name="ptje2" id="ptje2" min="0" max="5" autocomplete="off">
                 </div>
             </div>
             <text style="color:red" class="hidden" id="txtpartinval">Un jugador no puede competir contra si mismo</text>
@@ -181,21 +181,6 @@
                 }
             }
             
-        });
-        var $regexptje = /[^\d -]+/g;
-        $('#ptje1').on('keypress keydown keyup', function (e) {
-            if (!$('#ptje1').val().match($regexptje) && $('#ptje1').val().length < 20) {
-
-            } else {
-                $('#ptje1').val('');
-            }
-        });
-        $('#ptje2').on('keypress keydown keyup', function () {
-            if (!$('#ptje2').val().match($regexptje) && $('#ptje2').val().length < 20) {
-
-            } else {
-                $('#ptje2').val('');
-            }
         });
     });
 </script>

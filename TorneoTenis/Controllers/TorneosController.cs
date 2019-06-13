@@ -12,117 +12,140 @@ namespace TorneoTenis.Controllers
 {
     public class TorneosController: Controller
     {
-        
         private ApplicationDbContext db = new ApplicationDbContext();
+        private AccountController ac = new AccountController();
         
-        [HttpPost]
-        public ActionResult GuardarTorneo(String nombre, int cantjgdrs, int idusuario)
+        public ActionResult Torneos()
         {
-            Torneo t = new Torneo { IdUsuario = idusuario, nombre = nombre, cantjdrs = cantjgdrs };
-            if (getTorneo(t.Id, getUsuario(t.IdUsuario)) == null)
+            if (getSessionId()!=-1)
             {
-                db.Torneo.Add(t);
-                db.SaveChanges();
-                return View("Torneos", getTorneos(idusuario));
+                List<Torneo> torneos = getTorneos(getSessionId());
+                return View(torneos);
             }
             else
             {
-                ViewBag.Guardar = "Ya hay un torneo con ese nombre";
-                return View("AgregarTorneo");
+                return RedirectToAction("Index", "Home");
             }
+        }
+        public ActionResult TorneoAdd()
+        {
+            if (getSessionId()!=-1)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        [HttpPost]
+        public ActionResult AddTorneo(String nombre, int cantjgdrs)
+        {
+            if (getSessionId()!=-1)
+            {
+                insertarTorneo(nombre, cantjgdrs, getSessionId());
+                return RedirectToAction("Torneos");
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        [HttpGet]
+        public ActionResult Torneo(int Id)
+        {
+            if (getSessionId()!=-1)
+            {
+                TorneoDatos td = getTorneoDatos(Id, getSessionId());
+                return View(td);
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        [HttpPost]
+        public ActionResult AddJugador(String nombre, int Id)
+        {
+            if (getSessionId()!=-1)
+            {
+                ViewBag.msje = insertarJugador(nombre,Id);
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        [HttpGet]
+        public ActionResult AddPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, int Id)
+        {
+            if (getSessionId()!=-1)
+            {
+                ViewBag.msje1 = insertarPartido(jgdr1,jgdr2,ptje1,ptje2,Id);
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        public ActionResult DelTorneo(int Id)
+        {
+            if (getSessionId() != -1)
+            {
+                eliminarTorneo(Id);
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+        public ActionResult DelPartido(int Id)
+        {
+            if (getSessionId() != -1)
+            {
+                eliminarPartido(Id);
+                return Redirect(Request.UrlReferrer.ToString());
+            }
+            else
+            {
+                return RedirectToAction("Index", "Home");
+            }
+        }
+
+
+
+        public void insertarTorneo(String nombre, int cantjgdrs, int Idusuario)
+        {
+            Torneo t = new Torneo { IdUsuario = Idusuario, nombre = nombre, cantjdrs = cantjgdrs };
+            db.Torneo.Add(t);
+            db.SaveChanges();
         }
         public List<Torneo> getTorneos(int id)
         {
             List<Torneo> torneos = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE IdUsuario=@idusuario", new SqlParameter("@idusuario", id)).ToList();
             return torneos;
         }
-        public void eliminarTorneo(int Id)
+        public Torneo getTorneo(int Idtorneo, int Idusuario)
         {
-            Torneo t = new Torneo() { Id = Id };
-            db.Torneo.Attach(t);
-            db.Torneo.Remove(t);
-            //db.Torneo.SqlQuery("DELETE * FROM dbo.Torneos WHERE Id=@id", new SqlParameter("@id", Id));
-            db.SaveChanges();
-        }
-        public void eliminarPartido(int Id)
-        {
-            Partido p = new Partido() { Id = Id };
-            db.Partido.Attach(p);
-            db.Partido.Remove(p);
-            //db.Torneo.SqlQuery("DELETE * FROM dbo.Torneos WHERE Id=@id", new SqlParameter("@id", Id));
-            db.SaveChanges();
-        }
-        public Torneo getTorneo(int idtorneo, Usuario usuario)
-        {
-            SqlParameter idtor = new SqlParameter("@idtorneo", idtorneo);
-            SqlParameter idusu = new SqlParameter("@idusuario", usuario.Id);
+            SqlParameter idtor = new SqlParameter("@idtorneo", Idtorneo);
+            SqlParameter idusu = new SqlParameter("@idusuario", Idusuario);
             Torneo t = db.Torneo.SqlQuery("SELECT * FROM dbo.Torneos WHERE Id=@idtorneo AND IdUsuario=@idusuario", idtor, idusu).FirstOrDefault();
             return t;
         }
-        public List<Jugador> getJugadores(Torneo t)
+        public List<Jugador> getJugadores(int Idtorneo)
         {
-            SqlParameter idtorneo = new SqlParameter("@idtorneo", t.Id);
+            SqlParameter idtorneo = new SqlParameter("@idtorneo", Idtorneo);
             List<Jugador> jugadores = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadors WHERE IdTorneo=@idtorneo", idtorneo).ToList();
             return jugadores;
         }
-        public List<Partido> getPartidos(Torneo t)
+        public List<Partido> getPartidos(int Idtorneo)
         {
-            SqlParameter idtorneo = new SqlParameter("@idtorneo", t.Id);
+            SqlParameter idtorneo = new SqlParameter("@idtorneo", Idtorneo);
             List<Partido> partidos = db.Partido.SqlQuery("SELECT * FROM dbo.Partidoes WHERE IdTorneo=@idtorneo", idtorneo).ToList();
             return partidos;
-        }
-        public Usuario getUsuario(int id)
-        {
-            Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE Id=@id", new SqlParameter("@id", id)).FirstOrDefault();
-            return usuario;
-        }
-        public TorneoDatos getTorneoDatos(int idtorneo, int id)
-        {
-            Usuario usuario = getUsuario(id);
-            Torneo torneo = getTorneo(idtorneo, usuario);
-            List<Jugador> jugadores = getJugadores(torneo);
-            List<Partido> partidos = getPartidos(torneo);
-            TorneoDatos td = new TorneoDatos { torneo = torneo, jugadores = jugadores, partidos = partidos };
-            return td;
-        }
-        public Jugador buscarJugador(String nombre, List<Jugador> js)
-        {
-            Jugador j = null;
-            int i = 0;
-            while (i<js.Count&&j==null)
-            {
-                if (js[i].nombre.Equals(nombre))
-                {
-                    j = js[i];
-                }
-                i++;
-            }
-            return j;
-        }
-        public TorneoDatos insertarJugador(String nombre, int Id, int idusuario)
-        {
-            TorneoDatos td = getTorneoDatos(Id, idusuario);
-            Jugador j = new Jugador { IdTorneo = td.torneo.Id, nombre=nombre };
-            if(validarJugador(td.torneo, j, td.jugadores))
-            {
-                agregarJugador(j);
-                td.jugadores.Add(j);
-            }
-            return td;
-        }
-        public TorneoDatos insertarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, int Idtorneo, int id)
-        {
-            TorneoDatos td = getTorneoDatos(Idtorneo, id);
-            Jugador j1 = buscarJugador(jgdr1,td.jugadores);
-            Jugador j2 = buscarJugador(jgdr2, td.jugadores);
-            Partido p=null;
-            if (j1!=null&&j2!=null&&jgdr1.Equals(jgdr2)==false )
-            {
-                p = new Partido{ IdTorneo = td.torneo.Id, ptganador=ptje1, ptperdedor=ptje2, ganador=jgdr1, perdedor=jgdr2 };
-                agregarPartido(p);
-                td.partidos.Add(p);
-            }
-            return td;
         }
         public Partido getPartido(int Id)
         {
@@ -130,38 +153,83 @@ namespace TorneoTenis.Controllers
             Partido p = db.Partido.SqlQuery("SELECT * FROM dbo.Partidoes WHERE Id=@idpartido", idpartido).FirstOrDefault();
             return p;
         }
-        public void agregarJugador(Jugador j)
+        public Jugador getJugador(String nombre, int Idtorneo)
         {
-            db.Jugador.Add(j);
-            db.SaveChanges();
+            SqlParameter nom = new SqlParameter("@nombre", nombre);
+            SqlParameter idtorneo = new SqlParameter("@idtorneo", Idtorneo);
+            Jugador jugador = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadors WHERE IdTorneo=@idtorneo AND nombre=@nombre", idtorneo, nom).FirstOrDefault();
+            return jugador;
         }
-        public void agregarPartido(Partido p)
+        public TorneoDatos getTorneoDatos(int Idtorneo, int Idusuario)
         {
-            db.Partido.Add(p);
-            db.SaveChanges();
+            Torneo torneo = getTorneo(Idtorneo, Idusuario);
+            List<Jugador> jugadores = getJugadores(Idtorneo);
+            List<Partido> partidos = getPartidos(Idtorneo);
+            TorneoDatos td = new TorneoDatos { torneo = torneo, jugadores = jugadores, partidos = partidos };
+            return td;
         }
-        public bool validarJugador(Torneo t, Jugador j, List<Jugador> js)
+        public String insertarJugador(String nombre, int Idtorneo)
         {
-
-            bool res=false;
-            bool nombreigual = false;
-            int i = 0;
-            if (js.Count < t.cantjdrs)
+            String msje;
+            Jugador j = getJugador(nombre, Idtorneo);
+            if (j==null)
             {
-                while (i < js.Count && nombreigual == false)
-                {
-                    if (js[i].nombre.Equals(j.nombre))
-                    {
-                        nombreigual = true;
-                    }
-                    i++;
-                }
-                if (!nombreigual)
-                {
-                    res = true;
-                }
+                db.Jugador.Add(new Jugador {IdTorneo=Idtorneo, nombre=nombre });
+                db.SaveChanges();
+                msje = "Jugador agregado correctamente";
             }
-            return res;
+            else
+            {
+                msje = "Jugador ya existente";
+            }
+            return msje;
+            
+        }
+        public String insertarPartido(String jgdr1, String jgdr2, String ptje1, String ptje2, int Idtorneo)
+        {
+            String msje;
+            Jugador j1 = getJugador(jgdr1, Idtorneo);
+            Jugador j2 = getJugador(jgdr2, Idtorneo);
+            Partido p=null;
+            if (j1!=null&&j2!=null&&jgdr1.Equals(jgdr2)==false )
+            {
+                p = new Partido{ IdTorneo = Idtorneo, ptganador=ptje1, ptperdedor=ptje2, ganador=jgdr1, perdedor=jgdr2 };
+                db.Partido.Add(p);
+                db.SaveChanges();
+                msje = "Partido añadido correctamente";
+            }
+            else
+            {
+                msje = "Partido no añadido, los jugadores no se encuentran en el torneo";
+            }
+            return msje;
+        }
+        public void eliminarTorneo(int Id)
+        {
+            Torneo t = new Torneo() { Id = Id };
+            db.Torneo.Attach(t);
+            db.Torneo.Remove(t);
+            db.SaveChanges();
+        }
+        public void eliminarPartido(int Id)
+        {
+            Partido p = new Partido() { Id = Id };
+            db.Partido.Attach(p);
+            db.Partido.Remove(p);
+            db.SaveChanges();
+        }
+        public int getSessionId()
+        {
+            int id;
+            if (Session["idusuario"] != null)
+            {
+                id = Int32.Parse(Session["idusuario"].ToString());
+            }
+            else
+            {
+                id = -1;
+            }
+            return id;
         }
 
     }

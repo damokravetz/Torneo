@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewBag.Title = "AgregarTorneo";
+}
+<script src="~/Scripts/jquery-3.4.1.min.js"></script>
+
+<div class="row">
+    <div class="col-sm-6">
+        <h2>Agregar Torneo</h2>
+        <form action="/Torneos/AddTorneo" method="post">
+            <div>
+                <p>Nombre del Torneo</p>
+                <input name="nombre" type="text" class="form-control" id="txtboxnomtorneo">
+                <text class="hidden" style="color:red;" id="txtnombreinval1">Nombre invalido</text>
+            </div>
+            <div>
+                <p>Jugadores/ Equipos</p>
+                <select class="form-control" id="cantjdrs" name="cantjgdrs">
+                    <option>Seleccionar Cantidad</option>
+                    @{
+                        for (int i = 2; i <= 32; i++)
+                        {
+                            <option value="@i">@i</option>
+                        }
+                    }
+                </select>
+            </div>
+            <p></p><button type="button" class="btn btn-secondary btn-lg" id="btnaddtorneo">Guardar</button>
+        </form>
+    </div>
+</div>
+
+@if (ViewBag.Guardar != null)
+{
+    <script type="text/javascript">alert("@ViewBag.Guardar");</script>
+}
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var $regexname = /^([a-zA-Z]{3,16})$/;
+        $('#txtboxnomtorneo').on('keypress keydown keyup', function () {
+            if (!$(this).val().match($regexname)) {
+                // there is a mismatch, hence show the error message
+                $('#txtnombreinval1').removeClass('hidden');
+                $('#btnaddtorneo').attr('type', 'button');
+                $('#btnaddtorneo').removeClass('btn btn-primary');
+                $('#btnaddtorneo').addClass('btn btn-secondary');
+
+            }
+            else {
+                // else, do not display message
+                $('#txtnombreinval1').addClass('hidden');
+                $('#btnaddtorneo').attr('type', 'submit');
+                $('#btnaddtorneo').removeClass('btn btn-secondary');
+                $('#btnaddtorneo').addClass('btn btn-primary');
+
+            }
+        });
+    });
+</script>

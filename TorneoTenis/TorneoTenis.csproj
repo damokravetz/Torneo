@@ -201,11 +201,10 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Views\Home\AgregarTorneo.cshtml" />
-    <Content Include="Views\Home\Torneos.cshtml" />
-    <Content Include="Views\Home\Torneo.cshtml" />
-    <Content Include="Views\Home\TusDatos.cshtml" />
-    <Content Include="Views\Home\TorneoMultiple.cshtml" />
+    <Content Include="Views\Torneos\TorneoAdd.cshtml" />
+    <Content Include="Views\Torneos\Torneos.cshtml" />
+    <Content Include="Views\Account\UserData.cshtml" />
+    <Content Include="Views\Torneos\Torneo.cshtml" />
     <Content Include="Scripts\umd\popper.min.js.map" />
     <Content Include="Scripts\umd\popper.js.map" />
     <Content Include="Scripts\umd\popper-utils.min.js.map" />
