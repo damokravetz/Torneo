@@ -230,7 +230,13 @@ namespace TorneoTenis.Controllers
         }
         public String eliminarPartido(int Id)
         {
-            Partido p = new Partido() { Id = Id };
+
+            Partido p = getPartido(Id);
+            Jugador j1 = getJugador(p.ganador, p.IdTorneo);
+            Jugador j2 = getJugador(p.perdedor, p.IdTorneo);
+            j1.ganados = j1.ganados - 1;
+            j1.jugados = j1.jugados - 1;
+            j2.jugados = j2.jugados - 1;
             db.Partido.Attach(p);
             db.Partido.Remove(p);
             db.SaveChanges();
