@@ -16,7 +16,7 @@ namespace TorneoTenis.Controllers
         [HttpPost]
         public ActionResult Login(String email, String pass)
         {
-            ViewBag.login = insertarLogin(email,pass);
+            TempData["msje"] = insertarLogin(email,pass);
             if (getSessionId()!=-1)
             {
                 return RedirectToAction("Torneos","Torneos");
@@ -27,9 +27,9 @@ namespace TorneoTenis.Controllers
             }
         }
         [HttpPost]
-        public ActionResult Register(String nombre, String apellido, String email, String pass)
+        public ActionResult Register(String nombre, String apellido, String email, String pass1, String pass2)
         {
-            ViewBag.register = insertarUsuario(nombre, apellido, email, pass);
+            TempData["msje"] = insertarUsuario(nombre, apellido, email, pass1, pass2);
             return RedirectToAction("Index", "Home");
         }
         public ActionResult UserData()
@@ -44,19 +44,26 @@ namespace TorneoTenis.Controllers
             }
         }
 
-        public String insertarUsuario(String nombre, String apellido, String email, String pass)
+        public String insertarUsuario(String nombre, String apellido, String email, String pass1, String pass2)
         {
             String msje;
             Usuario usuario = db.Usuario.SqlQuery("SELECT * FROM dbo.Usuarios WHERE email=@email", new SqlParameter("@email", email)).FirstOrDefault();
-            if (usuario == null)
+            if (usuario == null&& pass1==pass2)
             {
-                db.Usuario.Add(new Usuario { nombre = nombre, apellido = apellido, email = email, pass = pass });
+                db.Usuario.Add(new Usuario { nombre = nombre, apellido = apellido, email = email, pass = pass1 });
                 db.SaveChanges();
                 msje = "Usuario registrado con exito";
             }
             else
             {
-                msje = "El usuario ya se encuentra registrado";
+                if (usuario!=null)
+                {
+                    msje = "El usuario ya se encuentra registrado";
+                }
+                else
+                {
+                    msje = "Revisar clave";
+                }
             }
             return msje;
         }
@@ -71,7 +78,7 @@ namespace TorneoTenis.Controllers
             }
             else
             {
-                msje = "Email o contraseña incorrectos";
+                msje = "Email o clave incorrectos";
             }
             return msje;
         }

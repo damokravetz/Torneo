@@ -28,15 +28,12 @@
             </div>
         </div>
     </div>
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
     <div class="container body-content">
         @RenderBody()
 
     </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    
-    
     @RenderSection("scripts", required: false)
 </body>
 </html>

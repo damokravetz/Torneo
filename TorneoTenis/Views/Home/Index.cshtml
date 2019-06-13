@@ -1,44 +1,40 @@
-﻿<div class="row" style="text-align:center"><h1>TuTorneo</h1></div>
+﻿
+<div class="row" style="text-align:center"><h1>TuTorneo</h1></div>
 <div class="row">
     <div class="col-sm-6">
         <div class="d0" style="float:right">
-            <form action="/Account/Login" method="post">
+            <form action="/Account/Login" method="post" id="formlog">
                 <h3>Login:</h3>
                 <p>Email</p>
-                <input name="email" id="email0" type="email" class="form-control">
+                <input name="email" id="email0" type="email" class="form-control" required>
                 <p>Contraseña</p>
-                <p><input name="pass" id="pass0" type="password" class="form-control"></p>
-                <input type="submit" class="btn btn-primary btn-lg">
+                <p><input name="pass" id="pass0" type="password" class="form-control" required></p>
+                <button type="submit" class="btn btn-primary btn-lg">Entrar</button>
 
             </form>
         </div>
     </div>
     <div class="col-sm-6">
-        <form action="/Account/Register" method="post">
+        <form action="/Account/Register" method="post" id="formreg">
             <div class="d0" style="float:left">
                 <h3>Registrarse:</h3>
                 <p>Nombre</p>
-                <p><input name="nombre" id="nom" type="text" class="form-control"></p>
+                <p><input name="nombre" id="nom" type="text" class="form-control" required></p>
                 <p>Apellido</p>
-                <p><input name="apellido" id="ape" type="text" class="form-control"></p>
+                <p><input name="apellido" id="ape" type="text" class="form-control" required></p>
                 <p>Email</p>
-                <p><input name="email" id="email1" type="email" class="form-control"></p>
+                <p><input name="email" id="email1" type="email" class="form-control" required></p>
                 <p>Contraseña</p>
-                <p><input id="pass1" type="password" class="form-control"></p>
+                <p><input name="pass1" id="pass1" type="password" class="form-control" required></p>
                 <p>Confirmar Contraseña</p>
-                <p><input name="pass" id="pass2" type="password" class="form-control"></p>
-                <p><button type="submit" class="btn btn-primary btn-lg">Register</button></p>
+                <p><input name="pass2" id="pass2" type="password" class="form-control" required></p>
+                <p><button type="submit" class="btn btn-primary btn-lg">Registrar</button></p>
             </div>
         </form>
     </div>
 </div>
-@if (ViewBag.register != null)
+@if (ViewBag.msje != null)
 {
-    <script type="text/javascript">alert("@ViewBag.register");</script>
+    <script type="text/javascript">alert("@ViewBag.msje");</script>
 }
-@if (ViewBag.login != null)
-{
-    <script type="text/javascript">alert("@ViewBag.login");</script>
-}
-
 

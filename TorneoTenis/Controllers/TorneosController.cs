@@ -56,6 +56,17 @@ namespace TorneoTenis.Controllers
         {
             if (getSessionId()!=-1)
             {
+                if (TempData["msje1"]!=null|| TempData["msje2"] != null)
+                {
+                    if (TempData["msje1"] != null)
+                    {
+                        ViewBag.msje1 = TempData["msje1"];
+                    }
+                    else
+                    {
+                        ViewBag.msje2 = TempData["msje2"];
+                    }
+                }
                 TorneoDatos td = getTorneoDatos(Id, getSessionId());
                 return View(td);
             }
@@ -69,7 +80,7 @@ namespace TorneoTenis.Controllers
         {
             if (getSessionId()!=-1)
             {
-                ViewBag.msje = insertarJugador(nombre,Id);
+                TempData["msje1"] = insertarJugador(nombre,Id);
                 return Redirect(Request.UrlReferrer.ToString());
             }
             else
@@ -82,7 +93,7 @@ namespace TorneoTenis.Controllers
         {
             if (getSessionId()!=-1)
             {
-                ViewBag.msje1 = insertarPartido(jgdr1,jgdr2,ptje1,ptje2,Id);
+                TempData["msje2"] = insertarPartido(jgdr1,jgdr2,ptje1,ptje2,Id);
                 return Redirect(Request.UrlReferrer.ToString());
             }
             else
@@ -90,6 +101,7 @@ namespace TorneoTenis.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+        [HttpGet]
         public ActionResult DelTorneo(int Id)
         {
             if (getSessionId() != -1)
@@ -102,11 +114,12 @@ namespace TorneoTenis.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+        [HttpGet]
         public ActionResult DelPartido(int Id)
         {
             if (getSessionId() != -1)
             {
-                eliminarPartido(Id);
+                TempData["msje2"] = eliminarPartido(Id);
                 return Redirect(Request.UrlReferrer.ToString());
             }
             else
@@ -204,19 +217,21 @@ namespace TorneoTenis.Controllers
             }
             return msje;
         }
-        public void eliminarTorneo(int Id)
+        public String eliminarTorneo(int Id)
         {
             Torneo t = new Torneo() { Id = Id };
             db.Torneo.Attach(t);
             db.Torneo.Remove(t);
             db.SaveChanges();
+            return "Torneo eliminado";
         }
-        public void eliminarPartido(int Id)
+        public String eliminarPartido(int Id)
         {
             Partido p = new Partido() { Id = Id };
             db.Partido.Attach(p);
             db.Partido.Remove(p);
             db.SaveChanges();
+            return "Partido eliminado";
         }
         public int getSessionId()
         {

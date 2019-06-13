@@ -21,9 +21,12 @@ namespace TorneoTenis.Controllers
             }
             else
             {
+                if (TempData["msje"]!=null)
+                {
+                    ViewBag.msje = TempData["msje"];
+                }
                 return View();
-            }
-            
+            } 
         }
 
         public int getSessionId()
