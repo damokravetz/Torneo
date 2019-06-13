@@ -15,5 +15,7 @@ namespace TorneoTenis.Models
         public int Id { get; set; }
         public int IdTorneo { get; set; }
         public String nombre { get; set; }
+        public int ganados { get; set; }
+        public int jugados { get; set; }
     }
 }

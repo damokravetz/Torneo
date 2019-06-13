@@ -151,7 +151,7 @@ namespace TorneoTenis.Controllers
         public List<Jugador> getJugadores(int Idtorneo)
         {
             SqlParameter idtorneo = new SqlParameter("@idtorneo", Idtorneo);
-            List<Jugador> jugadores = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadors WHERE IdTorneo=@idtorneo", idtorneo).ToList();
+            List<Jugador> jugadores = db.Jugador.SqlQuery("SELECT * FROM dbo.Jugadors WHERE IdTorneo=@idtorneo ORDER BY ganados DESC", idtorneo).ToList();
             return jugadores;
         }
         public List<Partido> getPartidos(int Idtorneo)
@@ -187,7 +187,7 @@ namespace TorneoTenis.Controllers
             Jugador j = getJugador(nombre, Idtorneo);
             if (j==null)
             {
-                db.Jugador.Add(new Jugador {IdTorneo=Idtorneo, nombre=nombre });
+                db.Jugador.Add(new Jugador {IdTorneo=Idtorneo, nombre=nombre, ganados=0, jugados=0 });
                 db.SaveChanges();
                 msje = "Jugador agregado correctamente";
             }
@@ -206,6 +206,9 @@ namespace TorneoTenis.Controllers
             Partido p=null;
             if (j1!=null&&j2!=null&&jgdr1.Equals(jgdr2)==false )
             {
+                j1.ganados = j1.ganados + 1;
+                j1.jugados = j1.jugados+1;
+                j2.jugados = j2.jugados + 1;
                 p = new Partido{ IdTorneo = Idtorneo, ptganador=ptje1, ptperdedor=ptje2, ganador=jgdr1, perdedor=jgdr2 };
                 db.Partido.Add(p);
                 db.SaveChanges();
