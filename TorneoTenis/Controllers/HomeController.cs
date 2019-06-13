@@ -25,7 +25,6 @@ namespace TorneoTenis.Controllers
             }
             
         }
-        [HttpGet]
         public ActionResult TorneoMultiple(int Id)
         {
             if (getIdSession() == -1)
@@ -50,7 +49,7 @@ namespace TorneoTenis.Controllers
             else
             {
                 TorneoDatos td = tc.insertarPartido(jgdr1,jgdr2,ptje1,ptje2,Id,getIdSession());
-                return View("TorneoMultiple", td);
+                return RedirectToAction("TorneoMultiple", Id);
             }
             
         }
@@ -81,7 +80,7 @@ namespace TorneoTenis.Controllers
                 return View("Torneos", tc.getTorneos(getIdSession()));
             }
         }
-        /*[HttpGet]
+        [HttpGet]
         public ActionResult eliminarPartido(int Id)
         {
             if (getIdSession() == -1)
@@ -91,10 +90,10 @@ namespace TorneoTenis.Controllers
             else
             {
                 tc.eliminarPartido(Id);
-                return View("TorneoMultiple", tc.getTorneoDatos(idtorneo, getIdSession()));
-                
+                return Redirect(Request.UrlReferrer.ToString());
+
             }
-        }*/
+        }
 
 
         public ActionResult AgregarTorneo()
