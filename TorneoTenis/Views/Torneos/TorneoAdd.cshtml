@@ -16,7 +16,7 @@
             <div>
                 <p>Jugadores/ Equipos</p>
                 <select class="form-control" id="cantjdrs" name="cantjgdrs">
-                    <option>Seleccionar Cantidad</option>
+                    <option value="Seleccionar Cantidad">Seleccionar Cantidad</option>
                     @{
                         for (int i = 2; i <= 32; i++)
                         {
@@ -38,23 +38,27 @@
 <script type="text/javascript">
     $(document).ready(function () {
         var $regexname = /^([a-zA-Z]{3,16})$/;
-        $('#txtboxnomtorneo').on('keypress keydown keyup', function () {
-            if (!$(this).val().match($regexname)) {
-                // there is a mismatch, hence show the error message
-                $('#txtnombreinval1').removeClass('hidden');
+        $('#txtboxnomtorneo').on('keypress keydown keyup', validacion);
+        $('#cantjdrs').on('change', validacion);
+
+        function validacion () {
+            if (!$('#txtboxnomtorneo').val().match($regexname) || $('#cantjdrs').val() == "Seleccionar Cantidad") {
+                if ($('#txtboxnomtorneo').val().match($regexname) == false) {
+                    $('#txtnombreinval1').removeClass('hidden');
+                    console.log("hola");
+                }
                 $('#btnaddtorneo').attr('type', 'button');
                 $('#btnaddtorneo').removeClass('btn btn-primary');
                 $('#btnaddtorneo').addClass('btn btn-secondary');
 
             }
             else {
-                // else, do not display message
                 $('#txtnombreinval1').addClass('hidden');
                 $('#btnaddtorneo').attr('type', 'submit');
                 $('#btnaddtorneo').removeClass('btn btn-secondary');
                 $('#btnaddtorneo').addClass('btn btn-primary');
 
             }
-        });
+        }
     });
 </script>
