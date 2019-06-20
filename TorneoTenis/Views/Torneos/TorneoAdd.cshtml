@@ -40,25 +40,24 @@
         var $regexname = /^([a-zA-Z]{3,16})$/;
         $('#txtboxnomtorneo').on('keypress keydown keyup', validacion);
         $('#cantjdrs').on('change', validacion);
-
-        function validacion () {
-            if (!$('#txtboxnomtorneo').val().match($regexname) || $('#cantjdrs').val() == "Seleccionar Cantidad") {
-                if ($('#txtboxnomtorneo').val().match($regexname) == false) {
-                    $('#txtnombreinval1').removeClass('hidden');
-                    console.log("hola");
-                }
-                $('#btnaddtorneo').attr('type', 'button');
-                $('#btnaddtorneo').removeClass('btn btn-primary');
-                $('#btnaddtorneo').addClass('btn btn-secondary');
-
-            }
-            else {
-                $('#txtnombreinval1').addClass('hidden');
-                $('#btnaddtorneo').attr('type', 'submit');
-                $('#btnaddtorneo').removeClass('btn btn-secondary');
-                $('#btnaddtorneo').addClass('btn btn-primary');
-
-            }
-        }
     });
+    function validacion() {
+        if (!$('#txtboxnomtorneo').val().match($regexname) || $('#cantjdrs').val() == "Seleccionar Cantidad") {
+            if ($('#txtboxnomtorneo').val().match($regexname) == false) {
+                $('#txtnombreinval1').removeClass('hidden');
+                console.log("hola");
+            }
+            $('#btnaddtorneo').attr('type', 'button');
+            $('#btnaddtorneo').removeClass('btn btn-primary');
+            $('#btnaddtorneo').addClass('btn btn-secondary');
+
+        }
+        else {
+            $('#txtnombreinval1').addClass('hidden');
+            $('#btnaddtorneo').attr('type', 'submit');
+            $('#btnaddtorneo').removeClass('btn btn-secondary');
+            $('#btnaddtorneo').addClass('btn btn-primary');
+
+        }
+    }
 </script>

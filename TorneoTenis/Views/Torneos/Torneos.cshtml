@@ -8,7 +8,7 @@
         foreach (TorneoTenis.Models.Torneo t in Model)
         {
     <div class="divtorneo0">
-        <h1>@t.nombre</h1>
+        <h1 style="text-overflow:ellipsis">@t.nombre</h1>
         <p class="lead">@t.cantjdrs jugadores/equipos</p>
         <button class="btn btn-primary btn-lg" onclick="location.href = '/Torneos/Torneo/'+@t.Id" value="@t.nombre" name="nombre">Abrir</button>
         <button class="btn btn-primary btn-danger" onclick="location.href = '/Torneos/DelTorneo/'+@t.Id" value="@t.nombre" name="nombre">Eliminar</button>
