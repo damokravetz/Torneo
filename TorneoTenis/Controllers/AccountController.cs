@@ -43,6 +43,11 @@ namespace TorneoTenis.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+        public ActionResult salirSession()
+        {
+            Session.Remove("idusuario");
+            return RedirectToAction("Index", "Home");
+        }
 
         public String insertarUsuario(String nombre, String apellido, String email, String pass1, String pass2)
         {

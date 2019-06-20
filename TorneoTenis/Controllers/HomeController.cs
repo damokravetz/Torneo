@@ -42,10 +42,6 @@ namespace TorneoTenis.Controllers
             }
             return id;
         }
-        public ActionResult salirSession()
-        {
-            Session.Remove("idusuario");
-            return View("Index");
-        }
+        
     }
 }
